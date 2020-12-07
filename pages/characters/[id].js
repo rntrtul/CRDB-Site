@@ -26,225 +26,237 @@ function CharacterDetail({character}) {
     <div className = "content">
       <Head><title>CRDB | {character.name}</title></Head>
       <h1 className= "title is-2">{character.full_name}</h1>
-      <p>Player: {character.player.full_name}</p>
+      <p>Player: {character.player?.full_name}</p>
       <p>Race: {character.race.name}</p>
       <p>Character Type: {character.char_type.name}</p>
-
-      <Tabs selectedTabClassName = "is-active">
-        <TabList className = "tabs is-centered">
+      {character.char_type.name !== "Non Player Character" &&
+        <Tabs selectedTabClassName="is-active">
+        <TabList className="tabs is-centered">
           <ul>
-            <Tab><li><a>Stats</a></li></Tab>
-            <Tab><li><a>Stat Sheet</a></li></Tab>
-            <Tab><li><a>Rolls</a></li></Tab>
-            <Tab><li><a>Apperances</a></li></Tab>
-            <Tab><li><a>Spells</a></li></Tab>
+            <Tab>
+              <li><a>Stats</a></li>
+            </Tab>
+            <Tab>
+              <li><a>Stat Sheet</a></li>
+            </Tab>
+            <Tab>
+              <li><a>Rolls</a></li>
+            </Tab>
+            <Tab>
+              <li><a>Apperances</a></li>
+            </Tab>
+            <Tab>
+              <li><a>Spells</a></li>
+            </Tab>
           </ul>
         </TabList>
 
         <TabPanel>
-        <>
-          <div className="tile is-ancestor">
-            <div className = "tile is-parent">
-              <div className = "tile is-child box">
-                <div className = "level is-mobile">
-                  <div className = "level-item has-text-centered">
-                    <div>
-                      <p className="heading">Damage Dealt</p>
-                      <p className="title">{character.damage_total.final_value__sum}</p>
+          <>
+            <div className="tile is-ancestor">
+              <div className="tile is-parent">
+                <div className="tile is-child box">
+                  <div className="level is-mobile">
+                    <div className="level-item has-text-centered">
+                      <div>
+                        <p className="heading">Damage Dealt</p>
+                        <p className="title">{character.damage_total.final_value__sum}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child box">
+                  <div className="level is-mobile">
+                    <div className="level-item has-text-centered">
+                      <div>
+                        <p className="heading">Natural 1's</p>
+                        <p className="title">{character.nat_ones}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child box">
+                  <div className="level is-mobile">
+                    <div className="level-item has-text-centered">
+                      <div>
+                        <p className="heading">Natural 20's</p>
+                        <p className="title">{character.nat_twenty}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child box">
+                  <div className="level is-mobile">
+                    <div className="level-item has-text-centered">
+                      <div>
+                        <p className="heading">HDYWTDT</p>
+                        <p className="title">{character.hdywt_count}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child box">
+                  <div className="level is-mobile">
+                    <div className="level-item has-text-centered">
+                      <div>
+                        <p className="heading">Kills</p>
+                        <p className="title">{character.kill_count.kill_count__sum}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className = "tile is-parent">
-              <div className = "tile is-child box">
-                <div className = "level is-mobile">
-                  <div className = "level-item has-text-centered">
-                    <div>
-                      <p className="heading">Natural 1's</p>
-                      <p className="title">{character.nat_ones}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className = "tile is-parent">
-              <div className = "tile is-child box">
-                <div className = "level is-mobile">
-                  <div className = "level-item has-text-centered">
-                    <div>
-                      <p className="heading">Natural 20's</p>
-                      <p className="title">{character.nat_twenty}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className = "tile is-parent">
-              <div className = "tile is-child box">
-                <div className = "level is-mobile">
-                  <div className = "level-item has-text-centered">
-                    <div>
-                      <p className="heading">HDYWTDT</p>
-                      <p className="title">{character.hdywt_count}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className = "tile is-parent">
-              <div className = "tile is-child box">
-                <div className = "level is-mobile">
-                  <div className = "level-item has-text-centered">
-                    <div>
-                      <p className="heading">Kills</p>
-                      <p className="title">{character.kill_count.kill_count__sum}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <ReactFrappeChart
-            type="percentage"
-            title={"Rolls (" + character.roll_counts.total + " total)"}
-            colors={roll_colours}
-            barOptions={{depth:0}}
-            
-            data={{
-              labels: roll_labels,
-              datasets: [{ values: roll_data}], 
-            }}          
-          />
+            <ReactFrappeChart
+                type="percentage"
+                title={"Rolls (" + character.roll_counts.total + " total)"}
+                colors={roll_colours}
+                barOptions={{depth: 0}}
 
-          <div className="tile is-ancestor">
-            <div className = "tile is-parent">  
-              <div className = "tile is-child">
-                <ReactFrappeChart
+                data={{
+                  labels: roll_labels,
+                  datasets: [{values: roll_data}],
+                }}
+            />
+
+            <div className="tile is-ancestor">
+              <div className="tile is-parent">
+                <div className="tile is-child">
+                  <ReactFrappeChart
+                      type="bar"
+                      title="Top Roll Types"
+                      colors={['blue']}
+                      axisOptions={{xAxisMode: "tick"}}
+                      valuesOverPoints={true}
+                      tooltipOptions={{
+                        formatTooltipY: d => d > 1 ? d + " rolls" : d + " roll"
+                      }}
+                      data={{
+                        labels: character.top_roll_types.map((type) => type[0]),
+                        datasets: [{values: character.top_roll_types.map((type) => type[1])}],
+                      }}
+                  />
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child no_x_axis">
+                  <ReactFrappeChart
+                      type="bar"
+                      title="Rolls Per Episode"
+                      colors={['green']}
+                      axisOptions={{xAxisMode: "tick"}}
+                      tooltipOptions={{
+                        formatTooltipX: d => "EP " + d,
+                        formatTooltipY: d => d > 1 ? d + " rolls" : d + " roll"
+                      }}
+                      data={{
+                        labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
+                        datasets: [{values: character.ep_totals.rolls}],
+                        yMarkers: [{
+                          label: "Avg.",
+                          value: character.ep_totals.rolls.reduce((a, b) => a + b) / character.apperances.length,
+                          options: {labelPos: 'left'}
+                        }]
+                      }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {character.top_spells.total_count > 0 &&
+            <div className="tile is-ancestor">
+              <div className="tile is-parent">
+                <div className="tile is-child">
+                  <ReactFrappeChart
+                      type="bar"
+                      title={"Top Spells Cast (" + character.top_spells.total_count + " total)"}
+                      colors={['light-blue']}
+                      axisOptions={{xAxisMode: "tick"}}
+                      valuesOverPoints={true}
+                      tooltipOptions={{
+                        formatTooltipY: d => d > 1 ? d + " casts" : d + " cast"
+                      }}
+                      data={{
+                        labels: character.top_spells.list.map((spell) => spell[0]),
+                        datasets: [{values: character.top_spells.list.map((spell) => spell[1])}],
+                      }}
+                  />
+                </div>
+              </div>
+              <div className="tile is-parent">
+                <div className="tile is-child no_x_axis">
+                  <ReactFrappeChart
+                      type="bar"
+                      title={"Cast Per Episode"}
+                      colors={['light-green']}
+                      axisOptions={{xAxisMode: "tick"}}
+                      tooltipOptions={{
+                        formatTooltipX: d => "EP " + d,
+                        formatTooltipY: d => d > 1 ? d + " casts" : d + " cast"
+                      }}
+                      data={{
+                        labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
+                        datasets: [{values: character.ep_totals.casts}],
+                        yMarkers: [{
+                          label: "Avg.",
+                          value: character.ep_totals.casts.reduce((a, b) => a + b) / character.apperances.length,
+                          options: {labelPos: 'left'}
+                        }],
+                      }}
+                  />
+                </div>
+              </div>
+
+            </div>
+            }
+            <div className="no_x_axis">
+              <ReactFrappeChart
                   type="bar"
-                  title="Top Roll Types"
+                  title={"Damage Dealt Per Ep"}
                   colors={['blue']}
-                  axisOptions={{ xAxisMode: "tick"}}
-                  valuesOverPoints={true}
+                  axisOptions={{xAxisMode: "tick"}}
                   tooltipOptions={{
-                    formatTooltipY: d=> d > 1 ? d + " rolls" : d + " roll"
+                    formatTooltipX: d => "EP " + d,
+                    formatTooltipY: d => d + " dmg"
                   }}
                   data={{
-                    labels: character.top_roll_types.map((type) => type[0]),
-                    datasets: [{ values: character.top_roll_types.map((type) => type[1])}], 
+                    labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
+                    datasets: [{values: character.ep_totals.dmg_dealt}],
+                    yMarkers: [{
+                      label: "Avg.",
+                      value: character.ep_totals.dmg_dealt.reduce((a, b) => a + b) / character.apperances.length,
+                      options: {labelPos: 'left'}
+                    }],
                   }}
-                />
-              </div>      
-            </div>
-            <div className = "tile is-parent">
-              <div className = "tile is-child no_x_axis">
-              <ReactFrappeChart
-                type="bar"
-                title="Rolls Per Episode"
-                colors={['green']}
-                axisOptions={{ xAxisMode: "tick"}}
-                tooltipOptions={{
-                  formatTooltipX: d => "EP " + d,
-                  formatTooltipY: d=> d > 1 ? d + " rolls" : d + " roll"
-                }}
-                data={{
-                  labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
-                  datasets: [{ values: character.ep_totals.rolls}], 
-                  yMarkers: [{
-                    label: "Avg.",
-                    value: character.ep_totals.rolls.reduce((a,b) => a + b) / character.apperances.length,
-                    options: { labelPos: 'left' }
-                  }]
-                }}
               />
-              </div>
             </div>
-          </div>
-
-          {character.top_spells.total_count > 0 &&
-            <div className = "tile is-ancestor">
-              <div className = "tile is-parent">
-                <div className = "tile is-child">
-                  <ReactFrappeChart
-                    type="bar"
-                    title={"Top Spells Cast (" + character.top_spells.total_count + " total)"}
-                    colors={['light-blue']}
-                    axisOptions={{ xAxisMode: "tick"}}
-                    valuesOverPoints={true}
-                    tooltipOptions={{
-                      formatTooltipY: d=> d > 1 ? d + " casts" : d + " cast"
-                    }}
-                    data={{
-                      labels: character.top_spells.list.map((spell) => spell[0]),
-                      datasets: [{ values: character.top_spells.list.map((spell) => spell[1])}], 
-                    }}
-                  />
-                </div>
-              </div>
-              <div className = "tile is-parent">
-                <div className = "tile is-child no_x_axis">
-                  <ReactFrappeChart
-                    type="bar"
-                    title={"Cast Per Episode"}
-                    colors={['light-green']}
-                    axisOptions={{ xAxisMode: "tick"}}
-                    tooltipOptions={{
-                      formatTooltipX: d=> "EP "  + d,
-                      formatTooltipY: d=> d > 1 ? d + " casts" : d + " cast"
-                    }}
-                    data={{
-                      labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
-                      datasets: [{ values: character.ep_totals.casts}],
-                      yMarkers: [{
-                        label: "Avg.",
-                        value: character.ep_totals.casts.reduce((a,b) => a + b) / character.apperances.length,
-                        options: { labelPos: 'left' }
-                      }],
-                    }}
-                  />
-                </div>
-              </div>
-              
-            </div>          
-          }
-          <div className = "no_x_axis">
-            <ReactFrappeChart
-              type="bar"
-              title={"Damage Dealt Per Ep"}
-              colors={['blue']}
-              axisOptions={{ xAxisMode: "tick"}}
-              tooltipOptions={{
-                formatTooltipX: d=> "EP "  + d,
-                formatTooltipY: d=> d + " dmg"
-              }}
-              data={{
-                labels: [...Array(character.campaign.length).keys()].map(x => x + 1),
-                datasets: [{ values: character.ep_totals.dmg_dealt}],
-                yMarkers: [{
-                  label: "Avg.",
-                  value: character.ep_totals.dmg_dealt.reduce((a,b) => a + b) / character.apperances.length,
-                  options: { labelPos: 'left' }
-                  }],
-                }}
-              />
-            </div>      
-        </>
+          </>
         </TabPanel>
         <TabPanel>
-            <StatSheet data ={character.sheets}></StatSheet>
+          <StatSheet data={character.sheets} />
         </TabPanel>
         <TabPanel><p>Show character roll table</p></TabPanel>
         <TabPanel>
           <h4>Appears in ({character.apperances.length}):</h4>
           <ul>
-            {character.apperances.map((apperance) => 
-            <li key = {apperance.episode}><Link href={`/episodes/${apperance.episode}`}><a>{apperance.episode_title}</a></Link></li>
+            {character.apperances.map((apperance) =>
+                <li key={apperance.episode}><Link
+                    href={`/episodes/${apperance.episode}`}><a>{apperance.episode_title}</a></Link></li>
             )}
           </ul>
         </TabPanel>
         <TabPanel><p>Add table of all spells cast</p></TabPanel>
       </Tabs>
+      }
     </div>
   )
 }
