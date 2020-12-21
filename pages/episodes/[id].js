@@ -1,53 +1,33 @@
 import axios from 'axios'
-import Link from 'next/link'
 import Head from 'next/head'
-import Table, { defaultSortComparator } from 'mineral-ui/Table'
-import { ThemeProvider } from 'mineral-ui/themes'
-import { get_yt_link, timeFormat} from '../../components/helpers'
+import { timeFormat} from '../../components/helpers'
 import ReactFrappeChart from "react-frappe-charts"
+import RollTable from "../../components/Table/rolltable";
+import SpellTable from "../../components/Table/spellTable";
 
-function EpisodeDetail({episode, roll_type}) { 
-  const rolls_columns = [
-    { content: 'Time Stamp'   , key: 'time_stamp', primary: true},
-    { content: 'Character'    , key: 'character'},
-    { content: 'Roll Type'    , key: 'roll_type'},
-    { content: 'Natural Value', key: 'natural_value'},
-    { content: 'Final Value'  , key: 'final_value'},
-    { content: 'Notes'        , key: 'notes'},
-    { content: 'Damage'       , key: 'damage'},
-    { content: 'Kills'        , key: 'kill_count'}
-  ]
-
-  const casts_columns = [
-    {content: 'Time Stamp', key: 'time_stamp', primary: true},
-    {content: 'Spell', key: 'spell'},
-    {content: 'Character', key: 'character'},
-    {content: 'Cast Lvl', key: 'cast_level'},
-    {content: 'notes', key: 'notes'},
-  ]
-  
+function EpisodeDetail({episode}) {
   const rolls_display = episode.rolls.map((roll) => {
-    let yt_link = get_yt_link(roll.time_stamp, roll.notes, episode.vod_links)
     return {
-      "time_stamp": <a href={yt_link}>{timeFormat(roll.time_stamp)}</a>,
-      "character": <Link href = "/characters/[id]" as={`/characters/${roll.character.id}`}><a>{roll.character.name}</a></Link>,
-      "roll_type": <Link href="/rolls/types/[id]" as={`/rolls/types/${roll.roll_type.id}`}><a>{roll.roll_type.name}</a></Link>,
+      "timestamp": roll.timestamp,
+      "character": roll.character,
+      "roll_type": roll.roll_type,
       "natural_value": roll.natural_value,
       "final_value": roll.final_value,
       "notes": roll.notes,
       "damage": roll.damage,
       "kill_count": roll.kill_count,
+      "vod_links": episode.vod_links,
     }
   })
 
   const casts_display = episode.casts.map((cast) => {
-    let yt_link = get_yt_link(cast.timestamp, cast.notes, episode.vod_links)
     return {
-      "time_stamp": <a href={yt_link}>{timeFormat(cast.timestamp)}</a>,
-      "spell": <Link href = "/spells/[id]" as = {`/spells/${cast.spell.id}`}><a>{cast.spell.name}</a></Link>,
-      "character": <Link href = "/characters/[id]" as={`/characters/${cast.character.id}`}><a>{cast.character.name}</a></Link>,
+      "timestamp": cast.timestamp,
+      "spell": cast.spell,
+      "character": cast.character,
       'cast_level': cast.cast_level, 
       "notes": cast.notes,
+      "vod_links": episode.vod_links,
     }
   })
 
@@ -69,9 +49,9 @@ function EpisodeDetail({episode, roll_type}) {
           title="Time Breakdown"
           colors={['dark-grey', 'blue', 'dark-grey', 'blue', 'dark-grey']}
           barOptions={{depth:0}}
-          tooltipOptions={{
-            formatTooltipX: d => "et",
-            formatTooltipY: d => " ads"
+            tooltipOptions={{
+              formatTooltipX: d => "et",
+              formatTooltipY: d => " ads"
           }}
           data={{
             labels: ["Anouncments", "First Half", "Break", "Second Half", "End"],
@@ -93,19 +73,21 @@ function EpisodeDetail({episode, roll_type}) {
 
         <h4>Players in</h4>
         <ul>
-          {episode.attendance.map((player) => <li key = {player.player.full_name}> {player.player.full_name} </li> )}
+          {episode.attendance.map(player => <li key = {player.player.full_name}> {player.player.full_name} </li> )}
         </ul>
         
         <h4>Characters in</h4>
         <ul>
-          {episode.apperances.map((app) => <li key={app.character.name}> {app.character.name} </li> )}
+          {episode.apperances.map(app =>
+              <li key={app.character.name}> {app.character.name} </li>
+          )}
         </ul>
 
         {episode.level_ups.length > 0 &&
           <>
             <h4>Level ups this episode:</h4>
             <ul>
-              {episode.level_ups.map((level_up) => 
+              {episode.level_ups.map(level_up =>
                 <li key={level_up.char_id}> {level_up.char_name} leveled up to {level_up.level} </li> )}
             </ul>
           </>
@@ -115,7 +97,7 @@ function EpisodeDetail({episode, roll_type}) {
           <>
             <h4>Combat Encounters</h4>
             <ul>
-              {episode.combat_encounters.map((encounter) => 
+              {episode.combat_encounters.map(encounter =>
               <li>
                 {encounter.name}, starts at {timeFormat(encounter.start)}, end at {timeFormat(encounter.end)}, rounds: {encounter.rounds}
               </li> )}
@@ -124,32 +106,12 @@ function EpisodeDetail({episode, roll_type}) {
         }
 
         <h3>Spells Cast ({episode.casts.length})</h3>
-        <ThemeProvider id = "table">
-          <Table
-            striped
-            columns={casts_columns}
-            data={casts_display}
-            sortable
-            rowKey='time_stamp'
-            title="Episode Spell Casts"
-            hideTitle
-          />
-        </ThemeProvider>
+        <SpellTable data={casts_display} isEpisode />
 
         <h3>Rolls ({episode.rolls.length})</h3>
 
-        <ThemeProvider id = "table">
-          <Table
-            striped
-            columns={rolls_columns}
-            data={rolls_display}
-            sortable
-            rowKey='time_stamp'
-            title="Episode Rolls"
-            hideTitle
-          />
-        </ThemeProvider>
-      
+        <RollTable data={rolls_display} isEpisode />
+
       </div>
     </>
   )

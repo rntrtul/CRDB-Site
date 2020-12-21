@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTable, useSortBy,  useFilters, useGlobalFilter, useAsyncDebounce } from 'react-table'
-import matchSorter from 'match-sorter'
+import {matchSorter} from 'match-sorter'
 import regeneratorRuntime from "regenerator-runtime"
 
 function GlobalFilter({preGlobalFilteredRows,globalFilter,setGlobalFilter,}) {
@@ -106,7 +106,7 @@ export function fuzzyTextFilterFn(rows, id, filterValue){
 
 fuzzyTextFilterFn.autoRemove = val => !val
 
-function Table ({columns, data}){
+function Table ({columns, data, showFilter= false}){
     const filterTypes = React.useMemo(() => ({
         fuzzyText : fuzzyTextFilterFn,
     }), [])
@@ -138,25 +138,29 @@ function Table ({columns, data}){
 
     return (
         <>
-            <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-            />
-            <div className="box">
-                {headerGroups.map(headerGroup => (
-                    <div {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <p {...column.getHeaderProps()}>
-                                {column.render('Header')}
-                                <div>
-                                    {column.canFilter ? column.render('Filter') : null}
-                                </div>
-                            </p>
-                        ))}
-                    </div>
-                ))}
-            </div>
+            {showFilter &&
+            <>
+                <GlobalFilter
+                    preGlobalFilteredRows={preGlobalFilteredRows}
+                    globalFilter={state.globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                />
+                <div className="box">
+                    {headerGroups.map(headerGroup => (
+                        <div {...headerGroup.getHeaderGroupProps()}>
+                            {headerGroup.headers.map(column => (
+                                <p {...column.getHeaderProps()}>
+                                    {column.render('Header')}
+                                    <div>
+                                        {column.canFilter ? column.render('Filter') : null}
+                                    </div>
+                                </p>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+            </>
+            }
             <table {...getTableProps()} className='table is-striped is-fullwidth is-hoverable'>
                 <thead>
                 {headerGroups.map(headerGroup => (
@@ -178,10 +182,10 @@ function Table ({columns, data}){
                 ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
+                {rows.map((row, index) => {
                     prepareRow(row)
                     return (
-                        <tr {...row.getRowProps()}>
+                        <tr {...row.getRowProps()} key={index}>
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                             })}

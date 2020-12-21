@@ -1,30 +1,24 @@
 import React from "react";
 import Table from "./table";
 import {
+  castLevelCol,
   characterCol,
-  damageCol,
   episodeCol,
-  killsCol,
-  rollTypeCol,
   timeStampEpisodeCol,
   timeStampGenericCol,
-  totalCol,
-  naturalCol,
+  spellCol,
   notesCol,
 } from "./columnTypes";
 
-export function RollTable({ data, isEpisode = false, showFilter=false}) {
+export function SpellTable({ data, isEpisode = false, showFilter = false }) {
   const columns = React.useMemo(
     () => [
       ...(isEpisode ? [] : [episodeCol]),
       ...(isEpisode ? [timeStampEpisodeCol] : [timeStampGenericCol]),
       characterCol,
-      rollTypeCol,
-      totalCol,
-      naturalCol,
+      spellCol,
+      castLevelCol,
       notesCol,
-      damageCol,
-      killsCol,
     ],
     []
   );
@@ -34,4 +28,4 @@ export function RollTable({ data, isEpisode = false, showFilter=false}) {
   return <Table columns={columns} data={data} showFilter={showFilter} />;
 }
 
-export default RollTable;
+export default SpellTable;

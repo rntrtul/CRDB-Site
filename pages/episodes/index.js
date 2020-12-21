@@ -17,7 +17,7 @@ const Episodes = ({episodes, error}) => {
       <Head>
         <title>CRDB | Episodes</title>
       </Head>
-      <div class = "content">
+      <div className="content">
         <ul>
           {episodes.results.map((ep,key) => (
             <li key={ep.id}>

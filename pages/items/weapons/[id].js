@@ -1,7 +1,5 @@
 import axios from 'axios'
 import Link from 'next/link'
-import Head from 'next/head'
-import ReactFrappeChart from "react-frappe-charts"
 import {timeFormat, get_yt_link} from '../../../components/helpers'
 
 function WeaponDetail({weapon }) { 
@@ -40,7 +38,7 @@ function WeaponDetail({weapon }) {
                 </Link>
               </td>
               <td>
-                <a href = {get_yt_link(use.roll.time_stamp, use.roll.notes, use.roll.ep.vod_links)}>{timeFormat(use.roll.time_stamp)}</a>
+                <a href = {get_yt_link(use.roll.timestamp, use.roll.notes, use.roll.ep.vod_links)}>{timeFormat(use.roll.timestamp)}</a>
               </td>
               <td>{use.roll.character.name}</td>
               <td>{use.roll.roll_type.name}</td>
