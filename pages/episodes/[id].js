@@ -132,7 +132,8 @@ function EpisodeDetail({episode, roll_type}) {
             sortable
             rowKey='time_stamp'
             title="Episode Spell Casts"
-            hideTitle />
+            hideTitle
+          />
         </ThemeProvider>
 
         <h3>Rolls ({episode.rolls.length})</h3>
@@ -145,7 +146,8 @@ function EpisodeDetail({episode, roll_type}) {
             sortable
             rowKey='time_stamp'
             title="Episode Rolls"
-            hideTitle />
+            hideTitle
+          />
         </ThemeProvider>
       
       </div>
@@ -154,7 +156,7 @@ function EpisodeDetail({episode, roll_type}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('https://critroledb-api.herokuapp.com/episodes/api/episode')).data
+  const data = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode`)).data
   const paths = data.results.map((episode) => ({
     params: {id: episode.id.toString()},
   }))
@@ -163,7 +165,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const episode = (await axios.get(`https://critroledb-api.herokuapp.com/episodes/api/episode/${params.id}`)).data
+  const episode = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode/${params.id}`)).data
   return { props: { episode } }
 } 
 

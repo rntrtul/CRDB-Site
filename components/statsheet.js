@@ -16,7 +16,7 @@ function slot_count(lvl, sheet){
 
 const StatSheet = (props) => {
   const [query, setQuery] = useState('');
-  const url = query && `http://127.0.0.1:8000/characters/api/statsheet/${query}`
+  const url = query && `${process.env.DB_HOST}/characters/api/statsheet/${query}`
   const {status, data, error} = useFetch(url)
   
   const sheet = data
@@ -32,7 +32,7 @@ const StatSheet = (props) => {
 		}
   };  
 
-  let levels = [1,2,3,4,5,6,7,8,9]
+  const levels = [1,2,3,4,5,6,7,8,9]
   // make the things into columns so one height doesn't affect other (look weird)
   return (
     <div className = "container">
@@ -109,7 +109,6 @@ const StatSheet = (props) => {
           </article>
         </div>
       </div>
-      
 
       <div className="tile is-ancestor">
         <div className = "tile is-parent is-vertical is-3"> 
@@ -143,7 +142,7 @@ const StatSheet = (props) => {
         <div className = "tile is-parent is-3">
           <article className = "tile is-child box">
             <p><b>Skills:</b></p>
-            <table class = "table">
+            <table className = "table">
               <thead>
                 <tr>
                   <th><abbr title="proficency">Prof</abbr></th>

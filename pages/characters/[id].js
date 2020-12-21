@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 import StatSheet from '../../components/statsheet'
 import ReactFrappeChart from "react-frappe-charts"
+import process from "process";
 
 function CharacterDetail({character}) { 
   let normal_rolls = character.roll_counts.total - character.roll_counts.advantages - character.roll_counts.disadvantages
@@ -262,7 +263,7 @@ function CharacterDetail({character}) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('https://critroledb-api.herokuapp.com/characters/api/character')).data
+  const data = (await axios.get(`${process.env.DB_HOST}/characters/api/character`)).data
   const paths = data.results.map((character) => ({
     params: {id: character.id.toString()},
   }))
@@ -270,7 +271,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const character = (await axios.get(`https://critroledb-api.herokuapp.com/characters/api/character/${params.id}`)).data
+  const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data
   return { props: {character},revalidate: 120 }
 } 
 

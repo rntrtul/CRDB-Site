@@ -58,8 +58,9 @@ const fetchData = async (url) => await axios.get(url).then(
   }))
 
 export async function getServerSideProps(){
-  const potions = await fetchData('https://critroledb-api.herokuapp.com/items/api/potion')
-  const weapons = await fetchData('https://critroledb-api.herokuapp.com/items/api/weapon')
+
+  const potions = await fetchData(`${process.env.DB_HOST}/items/api/potion`)
+  const weapons = await fetchData(`${process.env.DB_HOST}/items/api/weapon`)
   const items = {
     'potions': potions,
     'weapons': weapons,

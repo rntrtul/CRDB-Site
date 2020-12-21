@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import axios from 'axios'
 
-const fetchData = async () => await axios.get('https://critroledb-api.herokuapp.com/episodes/api/episode').then(
+const fetchData = async () => await axios.get(`${process.env.DB_HOST}/episodes/api/episode`).then(
   res => ({
     error: false,
     episodes: res.data,

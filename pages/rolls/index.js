@@ -2,9 +2,10 @@ import Head from 'next/head'
 import React from 'react'
 import axios from 'axios'
 import {timeFormat} from '../../components/helpers'
-import { RollTable } from '../../components/rolltable'
+import RollTable from '../../components/Table/rolltable'
 import FilterForm from '../../components/filter'
-const fetchData = async () => await axios.get('https://critroledb-api.herokuapp.com/rolls/api/roll').then(
+
+const fetchData = async () => await axios.get(`${process.env.DB_HOST}/rolls/api/roll`).then(
   res => ({
     error: false,
     rolls: res.data,

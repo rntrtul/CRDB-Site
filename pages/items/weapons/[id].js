@@ -57,7 +57,7 @@ function WeaponDetail({weapon }) {
 }
 
 export async function getStaticPaths() {
-  const data = (await axios.get('https://critroledb-api.herokuapp.com/items/api/weapon')).data
+  const data = (await axios.get(`${process.env.DB_HOST}/items/api/weapon`)).data
   const paths = data.results.map((weapon) => ({
     params: {id: weapon.id.toString()},
   }))
@@ -65,7 +65,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}){
-  const weapon = (await axios.get(`https://critroledb-api.herokuapp.com/items/api/weapon/${params.id}`)).data
+  const weapon = (await axios.get(`${process.env.DB_HOST}/items/api/weapon/${params.id}`)).data
   return { props: {weapon},revalidate: 600 }
 } 
 
