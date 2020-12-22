@@ -305,8 +305,10 @@ CharacterDetail.propTypes = {
 };
 
 export async function getStaticPaths() {
-  const { data } = await axios.get(`${process.env.DB_HOST}/characters/api/character`);
-  const paths = data.results.map((character) => ({
+  const pageOne = (await axios.get(`${process.env.DB_HOST}/characters/api/character`)).data.results;
+  const pageTwo = (await axios.get(`${process.env.DB_HOST}/characters/api/character?page=2`)).data.results;
+  const data = pageOne.concat(pageTwo);
+  const paths = data.map((character) => ({
     params: { id: character.id.toString() },
   }));
   return { paths, fallback: false };
@@ -314,7 +316,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  return { props: { character }, revalidate: 120 };
+  return { props: { character }, revalidate: 240 };
 }
 
 export default CharacterDetail;

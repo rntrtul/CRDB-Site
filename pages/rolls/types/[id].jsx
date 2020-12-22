@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios';3
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -32,7 +32,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const rollType = (await axios.get(`${process.env.DB_HOST}/rolls/api/rolltype/${params.id}`)).data;
-  return { props: { rollType } };
+  return { props: { rollType }, revalidate: 240 };
 }
 
 export default RollType;

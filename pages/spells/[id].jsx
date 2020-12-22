@@ -84,7 +84,7 @@ export async function getStaticProps({ params }) {
   const spell = (
     await axios.get(`${process.env.DB_HOST}/spells/api/spell/${params.id}`)).data;
 
-  return { props: { spell }, revalidate: 3 };
+  return { props: { spell }, revalidate: 240 };
 }
 
 export default SpellDetail;
