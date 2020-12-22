@@ -1,5 +1,5 @@
-import React from "react";
-import Table from "./table";
+import React from 'react';
+import Table from './table';
 import {
   castLevelCol,
   characterCol,
@@ -8,7 +8,7 @@ import {
   timeStampGenericCol,
   spellCol,
   notesCol,
-} from "./columnTypes";
+} from './columnTypes';
 
 export function SpellTable({ data, isEpisode = false, showFilter = false }) {
   const columns = React.useMemo(
@@ -16,14 +16,12 @@ export function SpellTable({ data, isEpisode = false, showFilter = false }) {
       ...(isEpisode ? [] : [episodeCol]),
       ...(isEpisode ? [timeStampEpisodeCol] : [timeStampGenericCol]),
       characterCol,
-      spellCol,
+      ...(isEpisode ? [spellCol] : []),
       castLevelCol,
       notesCol,
     ],
-    []
+    [],
   );
-
-  //do processing on data here
 
   return <Table columns={columns} data={data} showFilter={showFilter} />;
 }

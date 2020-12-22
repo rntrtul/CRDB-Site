@@ -43,12 +43,12 @@ function EpisodeDetail({ episode }) {
           E
           {episode.num}
           )
-          {' '}
         </h1>
         <h4>{episode.air_date}</h4>
         <p className="is-medium">{episode.description}</p>
         <p>
           Length:
+          {' '}
           {timeFormat(episode.length)}
         </p>
       </div>
@@ -62,8 +62,8 @@ function EpisodeDetail({ episode }) {
           colors={['dark-grey', 'blue', 'dark-grey', 'blue', 'dark-grey']}
           barOptions={{ depth: 0 }}
           tooltipOptions={{
-            formatTooltipX: (d) => d + ' as',
-            formatTooltipY: (d) => d + ' ds',
+            formatTooltipX: (d) => d,
+            formatTooltipY: (d) => d,
           }}
           data={{
             labels: ['Announcements', 'First Half', 'Break', 'Second Half', 'End'],
@@ -80,66 +80,46 @@ function EpisodeDetail({ episode }) {
 
         <p>
           Break length:
+          {' '}
           {timeFormat(episode.second_half_start - episode.first_half_end)}
         </p>
         <p>
           First half start:
+          {' '}
           {timeFormat(episode.first_half_start)}
         </p>
         <p>
           First half end:
+          {' '}
           {timeFormat(episode.first_half_end)}
         </p>
         <p>
           Second half start:
+          {' '}
           {timeFormat(episode.second_half_start)}
         </p>
         <p>
           Second half end:
+          {' '}
           {timeFormat(episode.second_half_end)}
         </p>
 
-        <h4>Players in</h4>
-        <ul>
-          {episode.attendance.map((attendance) => (
-            <li key={attendance.player.full_name}>
-              {' '}
-              {attendance.player.full_name}
-              {' '}
-            </li>
-          ))}
-        </ul>
-
         <h4>Characters in</h4>
         <ul>
-          {episode.apperances.map((app) => (
-            <li key={app.character.name}>
-              {' '}
-              {app.character.name}
-              {' '}
-            </li>
-          ))}
+          {episode.appearances.map((app) => {
+            const levelUp = episode.level_ups.find((el) => el.char_name === app.character.name);
+            const player = episode.attendance.find((el) => el.player.id === app.character.player);
+            return (
+              <li key={app.character.name}>
+                {' '}
+                {app.character.name}
+                {' '}
+                {player ? <span>{` | ${player.player.full_name}`}</span> : <span>{' | ?'}</span>}
+                { levelUp && <span>{` | leveled up to ${levelUp.level}`}</span> }
+              </li>
+            );
+          })}
         </ul>
-
-        {episode.level_ups.length > 0
-          && (
-          <>
-            <h4>Level ups this episode:</h4>
-            <ul>
-              {episode.level_ups.map((levelUp) => (
-                <li key={levelUp.char_id}>
-                  {' '}
-                  {levelUp.char_name}
-                  {' '}
-                  leveled up to
-                  {' '}
-                  {levelUp.level}
-                  {' '}
-                </li>
-              ))}
-            </ul>
-          </>
-          )}
 
         {episode.combat_encounters.length > 0
           && (
@@ -185,7 +165,7 @@ EpisodeDetail.propTypes = {
   episode: PropTypes.shape({
     air_date: PropTypes.string,
     attendance: PropTypes.array,
-    apperances: PropTypes.array,
+    appearances: PropTypes.array,
     campaign: PropTypes.object,
     casts: PropTypes.array,
     combat_encounters: PropTypes.array,

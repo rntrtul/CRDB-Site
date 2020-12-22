@@ -47,7 +47,7 @@ const killsCol = {
 
 const naturalCol = {
   Header: "Natural",
-  accessor: "natural_value",
+  accessor: row => row.natural_value ? row.natural_value : '',
   Filter: NumberRangeColumnFilter,
   filter: "between",
 };
@@ -102,7 +102,7 @@ const timeStampGenericCol = {
 
 const totalCol = {
   Header: "Total",
-  accessor: "final_value",
+  accessor: row => row.final_value ? row.final_value : '',
   Filter: NumberRangeColumnFilter,
   filter: "between",
 };

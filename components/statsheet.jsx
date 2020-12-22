@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useFetch } from './fetcher';
+import useFetch from './fetcher';
 
 function slotCount(lvl, sheet) {
   if (lvl === 1) return sheet.slots_one;
@@ -332,7 +332,11 @@ const StatSheet = ({ sheets }) => {
 
 StatSheet.propTypes = {
   sheets: PropTypes.arrayOf([
-    PropTypes.object,
+    PropTypes.shape({
+      armour_class: PropTypes.number,
+      equipment: PropTypes.string,
+      max_health: PropTypes.number,
+    }),
   ]).isRequired,
 };
 

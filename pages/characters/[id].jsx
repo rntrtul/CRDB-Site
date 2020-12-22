@@ -1,11 +1,13 @@
 import axios from 'axios';
 import Link from 'next/link';
 import Head from 'next/head';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {
+  Tab, Tabs, TabList, TabPanel,
+} from 'react-tabs';
 import ReactFrappeChart from 'react-frappe-charts';
 import React from 'react';
 import PropTypes from 'prop-types';
-import StatSheet from '../../components/statsheet';
+import BarChart from '../../components/Charts/bar';
 
 function CharacterDetail({ character }) {
   const normalRolls = character.roll_counts.total - character.roll_counts.advantages
@@ -17,6 +19,7 @@ function CharacterDetail({ character }) {
 
   const insertType = (num, name, colour, colourArr, dataArr, labelArr) => {
     dataArr.splice(-1, 0, num);
+    // eslint-disable-next-line no-param-reassign
     dataArr[-1] = rollData[-1] - rollData[-2];
     labelArr.splice(-1, 0, name);
     colourArr.splice(-1, 0, colour);
@@ -52,30 +55,17 @@ function CharacterDetail({ character }) {
       <Tabs selectedTabClassName="is-active">
         <TabList className="tabs is-centered">
           <ul>
-            <Tab>
-              <li>
-                <a>Stats</a>
-              </li>
+            <Tab tabIndex="1">
+              <a>Stats</a>
             </Tab>
-            <Tab>
-              <li>
-                <a>Stat Sheet</a>
-              </li>
+            <Tab tabIndex="2">
+              <a>Rolls</a>
             </Tab>
-            <Tab>
-              <li>
-                <a>Rolls</a>
-              </li>
+            <Tab tabIndex="3">
+              <a>Appearances</a>
             </Tab>
-            <Tab>
-              <li>
-                <a>Apperances</a>
-              </li>
-            </Tab>
-            <Tab>
-              <li>
-                <a>Spells</a>
-              </li>
+            <Tab tabIndex="4">
+              <a>Spells</a>
             </Tab>
           </ul>
         </TabList>
@@ -89,7 +79,7 @@ function CharacterDetail({ character }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Damage Dealt</p>
-                        <p className="title">{character.damage_total.final_value__sum}</p>
+                        <p className="title">{character.damage_total}</p>
                       </div>
                     </div>
                   </div>
@@ -137,7 +127,7 @@ function CharacterDetail({ character }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Kills</p>
-                        <p className="title">{character.kill_count.kill_count__sum}</p>
+                        <p className="title">{character.kill_count}</p>
                       </div>
                     </div>
                   </div>
@@ -159,43 +149,31 @@ function CharacterDetail({ character }) {
             <div className="tile is-ancestor">
               <div className="tile is-parent">
                 <div className="tile is-child">
-                  <ReactFrappeChart
-                    type="bar"
+                  <BarChart
                     title="Top Roll Types"
                     colors={['blue']}
-                    axisOptions={{ xAxisMode: 'tick' }}
+                    yToolTip=" roll"
+                    labels={character.top_roll_types.map((type) => type[0])}
+                    datasets={[{ values: character.top_roll_types.map((type) => type[1]) }]}
                     valuesOverPoints
-                    tooltipOptions={{
-                      formatTooltipY: (d) => (d > 1 ? d + ' rolls' : d + ' roll'),
-                    }}
-                    data={{
-                      labels: character.top_roll_types.map((type) => type[0]),
-                      datasets: [{ values: character.top_roll_types.map((type) => type[1]) }],
-                    }}
                   />
                 </div>
               </div>
               <div className="tile is-parent">
                 <div className="tile is-child no_x_axis">
-                  <ReactFrappeChart
-                    type="bar"
+                  <BarChart
                     title="Rolls Per Episode"
                     colors={['green']}
-                    axisOptions={{ xAxisMode: 'tick' }}
-                    tooltipOptions={{
-                      formatTooltipX: (d) => 'EP ' + d,
-                      formatTooltipY: (d) => (d > 1 ? d + ' rolls' : d + ' roll'),
-                    }}
-                    data={{
-                      labels: [...Array(character.campaign.length).keys()].map((x) => x + 1),
-                      datasets: [{ values: character.ep_totals.rolls }],
-                      yMarkers: [{
-                        label: 'Avg.',
-                        value: character.ep_totals.rolls.reduce((a, b) => a + b)
-                                / character.apperances.length,
-                        options: { labelPos: 'left' },
-                      }],
-                    }}
+                    xToolTip="EP "
+                    yToolTip=" roll"
+                    labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: character.ep_totals.rolls }]}
+                    yMarkers={[{
+                      label: 'Avg.',
+                      value: character.ep_totals.rolls.reduce((a, b) => a + b)
+                        / character.appearances.length,
+                      options: { labelPos: 'left' },
+                    }]}
                   />
                 </div>
               </div>
@@ -206,43 +184,31 @@ function CharacterDetail({ character }) {
             <div className="tile is-ancestor">
               <div className="tile is-parent">
                 <div className="tile is-child">
-                  <ReactFrappeChart
-                    type="bar"
+                  <BarChart
                     title={`Top Spells Cast (${character.top_spells.total_count} total)`}
                     colors={['light-blue']}
-                    axisOptions={{ xAxisMode: 'tick' }}
+                    labels={character.top_spells.list.map((spell) => spell[0])}
+                    datasets={[{ values: character.top_spells.list.map((spell) => spell[1]) }]}
+                    yToolTip=" cast"
                     valuesOverPoints
-                    tooltipOptions={{
-                      formatTooltipY: (d) => (d > 1 ? d + ' casts' : d + ' cast'),
-                    }}
-                    data={{
-                      labels: character.top_spells.list.map((spell) => spell[0]),
-                      datasets: [{ values: character.top_spells.list.map((spell) => spell[1]) }],
-                    }}
                   />
                 </div>
               </div>
               <div className="tile is-parent">
                 <div className="tile is-child no_x_axis">
-                  <ReactFrappeChart
-                    type="bar"
-                    title="Cast Per Episode"
+                  <BarChart
+                    title="Cast Per Epiosde"
                     colors={['light-green']}
-                    axisOptions={{ xAxisMode: 'tick' }}
-                    tooltipOptions={{
-                      formatTooltipX: (d) => 'EP ' + d,
-                      formatTooltipY: (d) => (d > 1 ? d + ' casts' : d + ' cast'),
-                    }}
-                    data={{
-                      labels: [...Array(character.campaign.length).keys()].map((x) => x + 1),
-                      datasets: [{ values: character.ep_totals.casts }],
-                      yMarkers: [{
-                        label: 'Avg.',
-                        value: character.ep_totals.casts.reduce((a, b) => a + b)
-                              / character.apperances.length,
-                        options: { labelPos: 'left' },
-                      }],
-                    }}
+                    xToolTip="EP "
+                    yToolTip=" cast"
+                    labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: character.ep_totals.casts }]}
+                    yMarkers={[{
+                      label: 'Avg.',
+                      value: character.ep_totals.casts.reduce((a, b) => a + b)
+                        / character.appearances.length,
+                      options: { labelPos: 'left' },
+                    }]}
                   />
                 </div>
               </div>
@@ -250,50 +216,43 @@ function CharacterDetail({ character }) {
             </div>
             )}
             <div className="no_x_axis">
-              <ReactFrappeChart
-                type="bar"
-                title="Damage Dealt Per Ep"
+              <BarChart
+                title="Damage Dealt Per Episode"
                 colors={['blue']}
-                axisOptions={{ xAxisMode: ' tick' }}
-                tooltipOptions={{
-                  formatTooltipX: (d) => 'EP ' + d,
-                  formatTooltipY: (d) => d + ' dmg',
-                }}
-                data={{
-                  labels: [...Array(character.campaign.length).keys()].map((x) => x + 1),
-                  datasets: [{ values: character.ep_totals.dmg_dealt }],
-                  yMarkers: [{
-                    label: 'Avg.',
-                    value: character.ep_totals.dmg_dealt.reduce((a, b) => a + b)
-                          / character.apperances.length,
-                    options: { labelPos: 'left' },
-                  }],
-                }}
+                xToolTip="Ep "
+                yToolTip=" point"
+                labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
+                datasets={[{ values: character.ep_totals.dmg_dealt }]}
+                yMarkers={[{
+                  label: 'Avg.',
+                  value: character.ep_totals.dmg_dealt.reduce((a, b) => a + b)
+                    / character.appearances.length,
+                  options: { labelPos: 'left' },
+                }]}
               />
             </div>
           </>
-        </TabPanel>
-        <TabPanel>
-          <StatSheet data={character.sheets} />
         </TabPanel>
         <TabPanel><p>Show character roll table</p></TabPanel>
         <TabPanel>
           <h4>
             Appears in (
-            {character.apperances.length}
+            {character.appearances.length}
             ):
           </h4>
           <ul>
-            {character.apperances.map((apperance) => (
-              <li key={apperance.episode}>
-                <Link href={`/episodes/${apperance.episode}`}>
-                  <a>{apperance.episode_title}</a>
+            {character.appearances.map((appearance) => (
+              <li key={appearance.episode}>
+                <Link href={`/episodes/${appearance.episode}`}>
+                  <a>{appearance.episode_title}</a>
                 </Link>
               </li>
             ))}
           </ul>
         </TabPanel>
-        <TabPanel><p>Add table of all spells cast</p></TabPanel>
+        <TabPanel>
+          <p>Add table of all spells cast</p>
+        </TabPanel>
       </Tabs>
       )}
     </div>
@@ -302,26 +261,33 @@ function CharacterDetail({ character }) {
 
 CharacterDetail.propTypes = {
   character: PropTypes.shape({
-    apperances: PropTypes.arrayOf([
+    appearances: PropTypes.arrayOf(
       PropTypes.shape({
         air_date: PropTypes.string,
         episode: PropTypes.number,
         episode_title: PropTypes.string,
         episode_num: PropTypes.number,
       }),
-    ]),
-    campaign: PropTypes.object,
-    char_type: PropTypes.object,
-    damage_total: PropTypes.object,
-    ep_totals: PropTypes.object,
+    ),
+    campaign: PropTypes.shape({
+      name: PropTypes.string,
+      length: PropTypes.number,
+    }),
+    char_type: PropTypes.shape({ name: PropTypes.string }),
+    damage_total: PropTypes.number,
+    ep_totals: PropTypes.shape({
+      rolls: PropTypes.arrayOf(PropTypes.number),
+      casts: PropTypes.arrayOf(PropTypes.number),
+      dmg_dealt: PropTypes.arrayOf(PropTypes.number),
+    }),
     full_name: PropTypes.string,
     hdywt_count: PropTypes.number,
-    kill_count: PropTypes.object,
+    kill_count: PropTypes.number,
     name: PropTypes.string,
     nat_ones: PropTypes.number,
     nat_twenty: PropTypes.number,
-    player: PropTypes.object,
-    race: PropTypes.object,
+    player: PropTypes.shape({ full_name: PropTypes.string }),
+    race: PropTypes.shape({ name: PropTypes.string }),
     roll_counts: PropTypes.shape({
       advantages: PropTypes.number,
       decahedron: PropTypes.number,
@@ -330,9 +296,11 @@ CharacterDetail.propTypes = {
       luck: PropTypes.number,
       total: PropTypes.number,
     }),
-    sheets: PropTypes.array,
-    top_roll_types: PropTypes.array,
-    top_spells: PropTypes.object,
+    top_roll_types: PropTypes.arrayOf(PropTypes.array),
+    top_spells: PropTypes.shape({
+      total_count: PropTypes.number,
+      list: PropTypes.arrayOf(PropTypes.array),
+    }),
   }).isRequired,
 };
 
