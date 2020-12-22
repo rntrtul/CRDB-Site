@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { get_yt_link, timeFormat } from "../helpers";
+import { getYoutubeLink, timeFormat } from "../helpers";
 import { NumberRangeColumnFilter, SelectColumnFilter } from "./table";
 
 const castLevelCol = {
@@ -83,7 +83,7 @@ const spellCol = {
 const timeStampEpisodeCol =  {
   Header: "Time Stamp",
   accessor: (row) => (
-      <a href={get_yt_link(row.timestamp, row.notes , row.vod_links)}>
+      <a href={getYoutubeLink(row.timestamp, row.notes , row.vod_links)}>
         {timeFormat(row.timestamp)}
       </a>
   ),
@@ -93,7 +93,7 @@ const timeStampEpisodeCol =  {
 const timeStampGenericCol = {
   Header: "Time Stamp",
   accessor: (row) => (
-    <a href={get_yt_link(row.timestamp, row.notes, row.episode.vod_links)}>
+    <a href={getYoutubeLink(row.timestamp, row.notes, row.episode.vod_links)}>
       {timeFormat(row.timestamp)}
     </a>
   ),
