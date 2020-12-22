@@ -1,5 +1,5 @@
-import '../styles/globals.css';
 import 'bulma/css/bulma.css';
+import '../styles/globals.scss';
 import 'nprogress/nprogress.css';
 import Router from 'next/router';
 import NProgress from 'nprogress';

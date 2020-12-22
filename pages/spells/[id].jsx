@@ -3,6 +3,7 @@ import Head from 'next/head';
 import PropType from 'prop-types';
 import React from 'react';
 import SpellTable from '../../components/Table/spellTable';
+import ReactFrappeChart from "react-frappe-charts";
 
 function SpellDetail({ spell }) {
   let aboveCast = 0;
@@ -47,6 +48,14 @@ function SpellDetail({ spell }) {
           </li>
         ))}
       </ol>
+      <ReactFrappeChart
+        type="percentage"
+        title="Top Casters"
+        data={{
+          labels: spell.top_users.map((users) => users[0]),
+          datasets: [{ values: spell.top_users.map((users) => users[1]) }],
+        }}
+      />
       <SpellTable data={spell.casts} />
     </div>
   );
