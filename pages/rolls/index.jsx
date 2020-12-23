@@ -2,7 +2,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import React from 'react';
 import PropTypes from 'prop-types';
-import RollTable from '../../components/Table/rollTable';
+import { RollTable } from '../../components/Table/tableTypes';
 import FilterForm from '../../components/filter';
 
 const fetchData = async () => axios

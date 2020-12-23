@@ -166,11 +166,11 @@ function CharacterDetail({ character }) {
                     colors={['green']}
                     xToolTip="EP "
                     yToolTip=" roll"
-                    labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: character.ep_totals.rolls }]}
+                    labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: character.ep_totals?.rolls }]}
                     yMarkers={[{
                       label: 'Avg.',
-                      value: character.ep_totals.rolls.reduce((a, b) => a + b)
+                      value: character.ep_totals?.rolls.reduce((a, b) => a + b)
                         / character.appearances.length,
                       options: { labelPos: 'left' },
                     }]}
@@ -201,11 +201,11 @@ function CharacterDetail({ character }) {
                     colors={['light-green']}
                     xToolTip="EP "
                     yToolTip=" cast"
-                    labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: character.ep_totals.casts }]}
+                    labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: character.ep_totals?.casts }]}
                     yMarkers={[{
                       label: 'Avg.',
-                      value: character.ep_totals.casts.reduce((a, b) => a + b)
+                      value: character.ep_totals?.casts.reduce((a, b) => a + b)
                         / character.appearances.length,
                       options: { labelPos: 'left' },
                     }]}
@@ -221,11 +221,11 @@ function CharacterDetail({ character }) {
                 colors={['blue']}
                 xToolTip="Ep "
                 yToolTip=" point"
-                labels={[...Array(character.campaign.length).keys()].map((x) => x + 1)}
-                datasets={[{ values: character.ep_totals.dmg_dealt }]}
+                labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
+                datasets={[{ values: character.ep_totals?.dmg_dealt }]}
                 yMarkers={[{
                   label: 'Avg.',
-                  value: character.ep_totals.dmg_dealt.reduce((a, b) => a + b)
+                  value: character.ep_totals?.dmg_dealt.reduce((a, b) => a + b)
                     / character.appearances.length,
                   options: { labelPos: 'left' },
                 }]}

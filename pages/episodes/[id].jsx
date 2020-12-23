@@ -4,10 +4,7 @@ import Head from 'next/head';
 import ReactFrappeChart from 'react-frappe-charts';
 import PropTypes from 'prop-types';
 import { timeFormat } from '../../components/helpers';
-// eslint-disable-next-line import/no-named-as-default
-import RollTable from '../../components/Table/rollTable';
-// eslint-disable-next-line import/no-named-as-default
-import SpellTable from '../../components/Table/spellTable';
+import { RollTable, SpellTable } from '../../components/Table/tableTypes';
 
 function EpisodeDetail({ episode }) {
   const rollsDisplay = episode.rolls.map((roll) => ({
@@ -146,7 +143,7 @@ function EpisodeDetail({ episode }) {
           {episode.casts.length}
           )
         </h3>
-        <SpellTable data={castsDisplay} isEpisode />
+        <SpellTable data={castsDisplay} isEpisode timestampAccessor={{ vodLinks: 'vod_links' }} />
 
         <h3>
           Rolls (
@@ -154,7 +151,7 @@ function EpisodeDetail({ episode }) {
           )
         </h3>
 
-        <RollTable data={rollsDisplay} isEpisode />
+        <RollTable data={rollsDisplay} isEpisode timestampAccessor={{ vodLinks: 'vod_links' }} />
 
       </div>
     </>

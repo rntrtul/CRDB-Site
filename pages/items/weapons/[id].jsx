@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { timeFormat, getYoutubeLink } from '../../../components/helpers';
+import { RollTable } from "../../../components/Table/tableTypes";
 
 function WeaponDetail({ weapon }) {
   return (
@@ -42,47 +43,31 @@ function WeaponDetail({ weapon }) {
         {weapon.uses.length}
       </p>
 
-      <table className="table is-striped is-fullwidth">
-        <thead>
-          <tr>
-            <td>Episode</td>
-            <td>Time Stamp</td>
-            <td>Character</td>
-            <td>Roll Type</td>
-            <td>Natural Value</td>
-            <td>Final Value</td>
-            <td>Notes</td>
-            <td>Damage</td>
-          </tr>
-        </thead>
-        <tbody>
-          {weapon.uses.map((use) => (
-            <tr>
-              <td>
-                <Link href="/episodes/[id]" as={`/episodes/${use.roll.ep.id}`}>
-                  <a>
-                    C
-                    {use.roll.ep.campaign_num}
-                    E
-                    {use.roll.ep.num}
-                  </a>
-                </Link>
-              </td>
-              <td>
-                <a href={getYoutubeLink(use.roll.timestamp, use.roll.notes, use.roll.ep.vod_links)}>
-                  {timeFormat(use.roll.timestamp)}
-                </a>
-              </td>
-              <td>{use.roll.character.name}</td>
-              <td>{use.roll.roll_type.name}</td>
-              <td>{use.roll.natural_value}</td>
-              <td>{use.roll.final_value}</td>
-              <td>{use.roll.notes}</td>
-              <td>{use.roll.damage}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <RollTable
+        data={weapon.uses}
+        timestampAccessor={{
+          timestamp: 'roll.timestamp',
+          notes: 'roll.notes',
+          vodLinks: 'roll.episode.vod_links',
+        }}
+        rollTypeAccessor={{
+          id: 'roll.roll_type.id',
+          name: 'roll.roll_type.name',
+        }}
+        episodeAccessor={{
+          id: 'roll.episode.id',
+          campNum: 'roll.episode.campaign_num',
+          num: 'roll.episode.num',
+        }}
+        characterAccessor={{
+          id: 'roll.character.id',
+          name: 'roll.character.name',
+        }}
+        naturalAccessor={{ natVal: 'roll.natural_value' }}
+        totalAccessor={{ finalVal: 'roll.final_value' }}
+        notesAccessor={{ notes: 'roll.notes' }}
+        damageAccessor={{ damage: 'roll.damage' }}
+      />
     </div>
   );
 }

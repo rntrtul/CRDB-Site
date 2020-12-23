@@ -2,7 +2,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import PropType from 'prop-types';
 import React from 'react';
-import SpellTable from '../../components/Table/spellTable';
+import { SpellTable } from '../../components/Table/tableTypes';
 import ReactFrappeChart from "react-frappe-charts";
 
 function SpellDetail({ spell }) {

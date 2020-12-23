@@ -2,110 +2,117 @@ import Link from "next/link";
 import { getYoutubeLink, timeFormat } from "../helpers";
 import { NumberRangeColumnFilter, SelectColumnFilter } from "./table";
 
-const castLevelCol = {
+const downObj = (path, obj) => {
+  const stepPath = path.split('.');
+  let curr = obj;
+  for (const index in stepPath){
+    curr = curr[stepPath[index]];
+  }
+  return curr;
+}
+
+const castLevelCol = ({ castLevel = "cast_level" }) => ({
   Header: "Cast Level",
-  accessor: row => row.cast_level === 0 ? "Cantrip" : row.cast_level,
+  accessor: row => downObj(castLevel, row) === 0 ? "Cantrip" : downObj(castLevel, row),
   Filter: NumberRangeColumnFilter,
   filter: "between",
-};
+});
 
-const characterCol = {
+const characterCol = ({ id = "character.id", name = "character.name" }) => ({
   Header: "Character",
   accessor: (row) => (
-    <Link href="/characters/[id]" as={`/characters/${row.character.id}`}>
-      <a>{row.character.name}</a>
+    <Link href="/characters/[id]" as={`/characters/${downObj(id, row)}`}>
+      <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
   filter: "equals",
-};
+});
 
-const damageCol = {
+const damageCol = ({ damage = "damage" }) => ({
   Header: "Damage",
-  accessor: "damage",
+  accessor: row => downObj(damage, row),
   filter: "fuzzyText",
-};
+});
 
-const episodeCol = {
+const episodeCol = ({
+  id = "episode.id",
+  campNum = "episode.campaign_num",
+  num = "episode.num"
+}) => ({
   Header: "Episode",
   accessor: (row) => (
-    <Link href="/episodes/[id]" as={`/episodes/${row.episode.id}`}>
+    <Link href="/episodes/[id]" as={`/episodes/${downObj(id, row)}`}>
       <a>
-        C{row.episode.campaign_num}E{row.episode.num}
+        C{downObj(campNum, row)}E{downObj(num, row)}
       </a>
     </Link>
   ),
   filter: "fuzzyText",
-};
+});
 
-const killsCol = {
+const killsCol = ({ killCount = "kill_count" }) => ({
   Header: "Kill(s)",
-  accessor: row => row.kill_count > 0 ? row.kill_count : "",
+  accessor: row => downObj(killCount, row) > 0 ? downObj(killCount, row) : "",
   Filter: NumberRangeColumnFilter,
   filter: "between",
-};
+});
 
-const naturalCol = {
+const naturalCol = ({ natVal = "natural_value" }) => ({
   Header: "Natural",
-  accessor: row => row.natural_value ? row.natural_value : '',
+  accessor: row => downObj(natVal, row) ? downObj(natVal, row) : '',
   Filter: NumberRangeColumnFilter,
   filter: "between",
-};
+});
 
-const notesCol = {
+const notesCol = ({ notes = "notes" }) => ({
   Header: "Notes",
-  accessor: "notes",
+  accessor: row => downObj(notes, row),
   filter: "fuzzyText",
-};
+});
 
-const rollTypeCol = {
+const rollTypeCol = ({id = "roll_type.id", name = "roll_type.name"}) => ({
   Header: "Roll Type",
   accessor: (row) => (
-    <Link href="/rolls/types/[id]" as={`/rolls/types/${row.roll_type.id}`}>
-      <a>{row.roll_type.name}</a>
+    <Link href="/rolls/types/[id]" as={`/rolls/types/${downObj(id, row)}`}>
+      <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
   filter: "equals",
-};
+});
 
-const spellCol = {
+const spellCol = ({ id = "spell.id", name = "spell.name" }) => ({
   Header: "Spell",
   accessor: (row) => (
-    <Link href="/spells/[id]" as={`/spells/${row.spell.id}`}>
-      <a>{row.spell.name}</a>
+    <Link href="/spells/[id]" as={`/spells/${downObj(id, row)}`}>
+      <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
   filter: "equals",
-};
+});
 
-const timeStampEpisodeCol =  {
+const timestampCol = ({
+  timestamp = "timestamp",
+  notes = "notes",
+  vodLinks = "episode.vod_links"}
+) => ({
   Header: "Time Stamp",
   accessor: (row) => (
-      <a href={getYoutubeLink(row.timestamp, row.notes , row.vod_links)}>
-        {timeFormat(row.timestamp)}
+      <a href={getYoutubeLink(downObj(timestamp, row), downObj(notes, row), downObj(vodLinks, row))}>
+        {timeFormat(downObj(timestamp, row))}
       </a>
   ),
   disableSortBy: true,
-};
+});
 
-const timeStampGenericCol = {
-  Header: "Time Stamp",
-  accessor: (row) => (
-    <a href={getYoutubeLink(row.timestamp, row.notes, row.episode.vod_links)}>
-      {timeFormat(row.timestamp)}
-    </a>
-  ),
-  disableSortBy: true,
-};
-
-const totalCol = {
+const totalCol = ({ finalVal = "final_value" }) => ({
   Header: "Total",
-  accessor: row => row.final_value ? row.final_value : '',
+  accessor: row => downObj(finalVal, row) ? downObj(finalVal, row) : '',
   Filter: NumberRangeColumnFilter,
   filter: "between",
-};
+});
 
 export {
   castLevelCol,
@@ -117,7 +124,6 @@ export {
   notesCol,
   rollTypeCol,
   spellCol,
-  timeStampEpisodeCol,
-  timeStampGenericCol,
+  timestampCol,
   totalCol,
 };
