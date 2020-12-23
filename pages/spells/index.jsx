@@ -52,6 +52,7 @@ export const getServerSideProps = async () => {
   const data = await fetchData();
   return {
     props: data,
+    revalidate: 240,
   };
 };
 

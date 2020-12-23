@@ -95,7 +95,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const weapon = (await axios.get(`${process.env.DB_HOST}/items/api/weapon/${params.id}`)).data;
-  return { props: { weapon }, revalidate: 600 };
+  return { props: { weapon }};
 }
 
 export default WeaponDetail;

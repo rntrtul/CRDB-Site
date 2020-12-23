@@ -81,7 +81,7 @@ const fetchData = async (url) => axios.get(url).then(
 export async function getServerSideProps() {
   const potions = (await fetchData(`${process.env.DB_HOST}/items/api/potion`)).data;
   const weapons = (await fetchData(`${process.env.DB_HOST}/items/api/weapon`)).data;
-  return { props: { potions, weapons } };
+  return { props: { potions, weapons }, revalidate: 240 };
 }
 
 export default Items;

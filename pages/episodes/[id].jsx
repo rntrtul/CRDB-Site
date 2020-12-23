@@ -191,7 +191,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const episode = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode/${params.id}`)).data;
-  return { props: { episode }, revalidate: 240 };
+  return { props: { episode } };
 }
 
 export default EpisodeDetail;

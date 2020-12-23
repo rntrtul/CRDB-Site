@@ -83,7 +83,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const potion = (await axios.get(`${process.env.DB_HOST}/items/api/potion/${params.id}`)).data;
-  return { props: { potion }, revalidate: 600 };
+  return { props: { potion }};
 }
 
 export default PotionDetail;

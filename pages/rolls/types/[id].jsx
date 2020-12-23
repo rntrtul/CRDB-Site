@@ -32,7 +32,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const rollType = (await axios.get(`${process.env.DB_HOST}/rolls/api/rolltype/${params.id}`)).data;
-  return { props: { rollType }, revalidate: 240 };
+  return { props: { rollType } };
 }
 
 export default RollType;

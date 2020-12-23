@@ -316,7 +316,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  return { props: { character }, revalidate: 240 };
+  return { props: { character } };
 }
 
 export default CharacterDetail;
