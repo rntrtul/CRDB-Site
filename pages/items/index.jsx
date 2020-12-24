@@ -33,7 +33,7 @@ const Items = ({ potions, weapons }) => (
 
         <TabPanel>
           <ul>
-            {weapons.results.map((weapon) => (
+            {weapons.map((weapon) => (
               <li key={weapon.id}>
                 <Link href="items/weapons/[id]" as={`/items/weapons/${weapon.id}`}>
                   <a>{weapon.name}</a>
@@ -45,7 +45,7 @@ const Items = ({ potions, weapons }) => (
 
         <TabPanel>
           <ul>
-            {potions.results.map((potion) => (
+            {potions.map((potion) => (
               <li key={potion.id}>
                 <Link href="/items/potions/[id]" as={`/items/potions/${potion.id}`}>
                   <a>{potion.name}</a>
@@ -78,10 +78,10 @@ const fetchData = async (url) => axios.get(url).then(
   data: null,
 }));
 
-export async function getServerSideProps() {
+export const getStaticProps = async () => {
   const potions = (await fetchData(`${process.env.DB_HOST}/items/api/potion`)).data;
   const weapons = (await fetchData(`${process.env.DB_HOST}/items/api/weapon`)).data;
-  return { props: { potions, weapons }, revalidate: 240 };
-}
+  return { props: { potions, weapons } };
+};
 
 export default Items;

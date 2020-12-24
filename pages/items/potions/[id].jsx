@@ -75,7 +75,7 @@ PotionDetail.propTypes = {
 
 export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/items/api/potion`);
-  const paths = data.results.map((potion) => ({
+  const paths = data.map((potion) => ({
     params: { id: potion.id.toString() },
   }));
   return { paths, fallback: false };
@@ -83,7 +83,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const potion = (await axios.get(`${process.env.DB_HOST}/items/api/potion/${params.id}`)).data;
-  return { props: { potion }};
+  return { props: { potion } };
 }
 
 export default PotionDetail;

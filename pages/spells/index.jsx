@@ -10,7 +10,7 @@ const fetchData = async () => axios
   .get(`${process.env.DB_HOST}/spells/api/spell`)
   .then((res) => ({
     error: false,
-    spells: res.data.results,
+    spells: res.data,
   }))
   .catch(() => ({
     error: true,
@@ -52,7 +52,6 @@ export const getServerSideProps = async () => {
   const data = await fetchData();
   return {
     props: data,
-    revalidate: 240,
   };
 };
 

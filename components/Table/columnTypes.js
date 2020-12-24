@@ -74,7 +74,7 @@ const notesCol = ({ notes = "notes" }) => ({
 const rollTypeCol = ({id = "roll_type.id", name = "roll_type.name"}) => ({
   Header: "Roll Type",
   accessor: (row) => (
-    <Link href="/rolls/types/[id]" as={`/rolls/types/${downObj(id, row)}`}>
+    <Link href="/rolls/types/[id]" as={`/rolls/types/${downObj(id, row)}`} id={downObj(name, row)}>
       <a>{downObj(name, row)}</a>
     </Link>
   ),

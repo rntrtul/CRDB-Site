@@ -77,12 +77,11 @@ Characters.propTypes = {
   }).isRequired,
 };
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const pc = (await fetchData(`${process.env.DB_HOST}/characters/api/charactertype/1`)).characters;
   const npc = (await fetchData(`${process.env.DB_HOST}/characters/api/charactertype/2`)).characters;
   return {
     props: { pc, npc },
-    revalidate: 240,
   };
 };
 

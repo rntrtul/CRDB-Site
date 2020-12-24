@@ -124,7 +124,7 @@ function EpisodeDetail({ episode }) {
             <h4>Combat Encounters</h4>
             <ul>
               {episode.combat_encounters.map((encounter) => (
-                <li>
+                <li key={encounter.name}>
                   {encounter.name}
                   , starts at
                   {timeFormat(encounter.start)}
@@ -143,7 +143,11 @@ function EpisodeDetail({ episode }) {
           {episode.casts.length}
           )
         </h3>
-        <SpellTable data={castsDisplay} isEpisode timestampAccessor={{ vodLinks: 'vod_links' }} />
+        <SpellTable
+          data={castsDisplay}
+          timestampAccessor={{ vodLinks: 'vod_links' }}
+          isEpisode
+        />
 
         <h3>
           Rolls (
@@ -151,7 +155,11 @@ function EpisodeDetail({ episode }) {
           )
         </h3>
 
-        <RollTable data={rollsDisplay} isEpisode timestampAccessor={{ vodLinks: 'vod_links' }} />
+        <RollTable
+          data={rollsDisplay}
+          timestampAccessor={{ vodLinks: 'vod_links' }}
+          isEpisode
+        />
 
       </div>
     </>
@@ -182,7 +190,7 @@ EpisodeDetail.propTypes = {
 
 export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/episodes/api/episode`);
-  const paths = data.results.map((episode) => ({
+  const paths = data.map((episode) => ({
     params: { id: episode.id.toString() },
   }));
 

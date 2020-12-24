@@ -73,7 +73,7 @@ SpellDetail.propTypes = {
 
 export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/spells/api/spell`);
-  const paths = data.results.map((spell) => ({
+  const paths = data.map((spell) => ({
     params: { id: spell.id.toString() },
   }));
 

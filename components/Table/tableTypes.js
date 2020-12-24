@@ -13,9 +13,13 @@ import {
   timestampCol,
   totalCol,
 } from './columnTypes';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 function RollTable({
   data,
+  defaultPageSize = publicRuntimeConfig.defaultPageSize,
   showFilter = false,
   isEpisode = false,
   characterAccessor = {},
@@ -42,11 +46,18 @@ function RollTable({
     ], [],
   );
 
-  return <Table columns={columns} data={data} showFilter={showFilter} />;
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      showFilter={showFilter}
+      defaultPageSize={defaultPageSize}
+    />);
 }
 
 function SpellTable({
   data,
+  defaultPageSize = publicRuntimeConfig.defaultPageSize,
   showFilter = false,
   isEpisode = false,
   castLevelAccessor = {},
@@ -67,7 +78,13 @@ function SpellTable({
     ], [],
   );
 
-  return <Table columns={columns} data={data} showFilter={showFilter} />;
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      showFilter={showFilter}
+      defaultPageSize={defaultPageSize}
+    />);
 }
 
 export {

@@ -8,8 +8,9 @@ import ReactFrappeChart from 'react-frappe-charts';
 import React from 'react';
 import PropTypes from 'prop-types';
 import BarChart from '../../components/Charts/bar';
+import { RollTable } from '../../components/Table/tableTypes';
 
-function CharacterDetail({ character }) {
+function CharacterDetail({ character, rolls }) {
   const normalRolls = character.roll_counts.total - character.roll_counts.advantages
                       - character.roll_counts.disadvantages;
   const rollData = [character.roll_counts.disadvantages,
@@ -233,7 +234,9 @@ function CharacterDetail({ character }) {
             </div>
           </>
         </TabPanel>
-        <TabPanel><p>Show character roll table</p></TabPanel>
+        <TabPanel>
+          <RollTable data={rolls} defaultPageSize={200} />
+        </TabPanel>
         <TabPanel>
           <h4>
             Appears in (
@@ -305,8 +308,9 @@ CharacterDetail.propTypes = {
 };
 
 export async function getStaticPaths() {
-  const pageOne = (await axios.get(`${process.env.DB_HOST}/characters/api/character`)).data.results;
-  const pageTwo = (await axios.get(`${process.env.DB_HOST}/characters/api/character?page=2`)).data.results;
+  const pageOne = (await axios.get(`${process.env.DB_HOST}/characters/api/character`)).data;
+  // const pageTwo = (await axios.get(`${process.env.DB_HOST}/characters/api/character?page=2`)).data.results;
+  const pageTwo = [];
   const data = pageOne.concat(pageTwo);
   const paths = data.map((character) => ({
     params: { id: character.id.toString() },
@@ -316,7 +320,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  return { props: { character } };
+  const rolls = (await axios.get(`${process.env.DB_HOST}/rolls/api/roll?character=${params.id}`)).data;
+  return { props: { character, rolls } };
 }
 
 export default CharacterDetail;

@@ -1,8 +1,10 @@
 import React from 'react';
 import {
-  useTable, useSortBy, useFilters, useGlobalFilter, useAsyncDebounce,
+  useTable, useSortBy, useFilters, useGlobalFilter, useAsyncDebounce, usePagination,
 } from 'react-table';
 import { matchSorter } from 'match-sorter';
+import Pagination from '../pagination';
+import { FaCaretUp, FaCaretDown } from 'react-icons/fa';
 import regeneratorRuntime from 'regenerator-runtime';
 
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
@@ -58,11 +60,11 @@ export function SelectColumnFilter({
   },
 }) {
   const options = React.useMemo(() => {
-    const options = new Set();
+    const availOptions = new Set();
     preFilteredRows.forEach((row) => {
-      options.add(row.values[id]);
+      availOptions.add(row.values[id].props.children.props.children);
     });
-    return [...options.values()];
+    return [...availOptions.values()];
   }, [id, preFilteredRows]);
 
   return (
@@ -73,7 +75,7 @@ export function SelectColumnFilter({
           onChange={(e) => { setFilter(e.target.value || undefined); }}
         >
           <option value="">All</option>
-          {options.map((option, i) => <option key={i} value={option}>{option}</option>)}
+          {options.map((option) => <option key={option} value={option}>{option}</option>)}
         </select>
       </div>
     </div>
@@ -86,13 +88,13 @@ export function NumberRangeColumnFilter({
   },
 }) {
   const [min, max] = React.useMemo(() => {
-    let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+    let currMin = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
+    let currMax = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
     preFilteredRows.forEach((row) => {
-      min = Math.min(row.values[id], min);
-      max = Math.max(row.values[id], max);
+      currMin = Math.min(row.values[id], currMin);
+      currMax = Math.max(row.values[id], currMax);
     });
-    return [min, max];
+    return [currMin, currMax];
   }, [id, preFilteredRows]);
 
   return (
@@ -125,7 +127,12 @@ export function fuzzyTextFilterFn(rows, id, filterValue) {
 
 fuzzyTextFilterFn.autoRemove = (val) => !val;
 
-function Table({ columns, data, showFilter = false }) {
+function Table({
+  columns,
+  data,
+  showFilter = false,
+  defaultPageSize,
+}) {
   const filterTypes = React.useMemo(() => ({
     fuzzyText: fuzzyTextFilterFn,
   }), []);
@@ -138,10 +145,18 @@ function Table({ columns, data, showFilter = false }) {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
     prepareRow,
     state,
-    visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
   } = useTable(
@@ -150,10 +165,12 @@ function Table({ columns, data, showFilter = false }) {
       data,
       defaultColumn,
       filterTypes,
+      initialState: { pageIndex: 0, pageSize: defaultPageSize },
     },
     useFilters,
     useGlobalFilter,
     useSortBy,
+    usePagination,
   );
 
   return (
@@ -191,19 +208,19 @@ function Table({ columns, data, showFilter = false }) {
                   <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                     {column.render('Header')}
                     <span>
-                        {column.isSorted
-                            ? column.isSortedDesc
-                              ? ' 🔽'
-                              : ' 🔼'
-                            : ''}
-                      </span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? <FaCaretUp />
+                          : <FaCaretDown />
+                        : ''}
+                    </span>
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row, index) => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={index}>
@@ -214,6 +231,19 @@ function Table({ columns, data, showFilter = false }) {
           </tbody>
         </table>
       </div>
+      { data.length > defaultPageSize // todo: make pagination it's own component
+        && (
+          <Pagination
+            canPreviousPage={canPreviousPage}
+            canNextPage={canNextPage}
+            gotoPage={gotoPage}
+            nextPage={nextPage}
+            pageCount={pageCount}
+            pageSize={pageSize}
+            previousPage={previousPage}
+            setPageSize={setPageSize}
+          />
+        )}
     </>
   );
 }

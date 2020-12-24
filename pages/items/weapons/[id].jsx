@@ -87,7 +87,7 @@ WeaponDetail.propTypes = {
 
 export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/items/api/weapon`);
-  const paths = data.results.map((weapon) => ({
+  const paths = data.map((weapon) => ({
     params: { id: weapon.id.toString() },
   }));
   return { paths, fallback: false };
@@ -95,7 +95,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const weapon = (await axios.get(`${process.env.DB_HOST}/items/api/weapon/${params.id}`)).data;
-  return { props: { weapon }};
+  return { props: { weapon } };
 }
 
 export default WeaponDetail;

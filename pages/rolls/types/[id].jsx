@@ -23,7 +23,7 @@ RollType.propTypes = {
 
 export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/rolls/api/rolltype`);
-  const paths = data.results.map((type) => ({
+  const paths = data.map((type) => ({
     params: { id: type.id.toString() },
   }));
 

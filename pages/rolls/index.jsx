@@ -22,7 +22,7 @@ const RollsList = ({ rolls }) => (
       <title>CRDB | Rolls</title>
     </Head>
     <FilterForm />
-    <RollTable data={rolls.results} showFilter />
+    <RollTable data={rolls} showFilter defaultPageSize={200} />
   </>
 );
 
@@ -32,11 +32,10 @@ RollsList.propTypes = {
   }).isRequired,
 };
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const data = await fetchData();
   return {
     props: data,
-    revalidate: 240,
   };
 };
 
