@@ -18,8 +18,9 @@ const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 
 function getMinMax(arr, id) {
-  let currMin = arr.length ? arr[0].values[id] : 0;
-  let currMax = arr.length ? arr[0].values[id] : 0;
+  let currMin = arr.length && arr[0].values[id] !== 'Cantrip' ? arr[0].values[id] : 0;
+  let currMax = arr.length && arr[0].values[id] !== 'Cantrip' ? arr[0].values[id] : 0;
+
   arr.forEach((row) => {
     const curr = row.values[id] !== 'Cantrip' ? row.values[id] : 0;
     currMin = Math.min(curr, currMin);
@@ -140,6 +141,7 @@ export function NumberRangeColumnFilter({
   return (
     <>
       <p>Min: {range[0]} Max: {range[1]}</p>
+      <p>{id}</p>
       <Range
         allowCross={false}
         ariaLabelForHandlers={[`min value of ${id}`, `max value of ${id}`]}

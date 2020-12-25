@@ -16,7 +16,7 @@ const castLevelCol = ({ castLevel = "cast_level" }) => ({
   accessor: row => downObj(castLevel, row) === 0 ? "Cantrip" : downObj(castLevel, row),
   Filter: NumberRangeColumnFilter,
   filter: (rows, columnIds, filterValue) => rows.filter((row) => {
-    const val = row.values['Cast Level'] !== "Cantrip" ? row.values['Cast Level'] : 0
+    const val = row.values['Cast Level'] !== "Cantrip" ? row.values['Cast Level'] : 0;
     return val >= filterValue[0] && val <= filterValue[1];
   }),
 });
@@ -34,6 +34,7 @@ const characterCol = ({ id = "character.id", name = "character.name" }) => ({
   ),
   Filter: SelectColumnFilter,
   filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Character'].key === filterValue),
+  disableSortBy: true,
 });
 
 const damageCol = ({ damage = "damage" }) => ({

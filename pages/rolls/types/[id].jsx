@@ -1,15 +1,18 @@
-import axios from 'axios';3
+import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { RollTable } from '../../../components/Table/tableTypes';
 
 function RollType({ rollType }) {
   return (
     <div className="content">
       <h1>{rollType.name}</h1>
-      <h3>
-        Count:
-        {rollType.count}
-      </h3>
+      <RollTable
+        data={rollType.rolls}
+        defaultPageSize={50}
+        hideRollType
+        showFilter
+      />
     </div>
   );
 }
@@ -18,6 +21,7 @@ RollType.propTypes = {
   rollType: PropTypes.shape({
     name: PropTypes.string,
     count: PropTypes.number,
+    rolls: PropTypes.array,
   }).isRequired,
 };
 
