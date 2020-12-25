@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getYoutubeLink, timeFormat } from "../helpers";
 import { NumberRangeColumnFilter, SelectColumnFilter } from "./table";
+import filter from "../filter";
 
 const downObj = (path, obj) => {
   const stepPath = path.split('.');
@@ -21,12 +22,16 @@ const castLevelCol = ({ castLevel = "cast_level" }) => ({
 const characterCol = ({ id = "character.id", name = "character.name" }) => ({
   Header: "Character",
   accessor: (row) => (
-    <Link href="/characters/[id]" as={`/characters/${downObj(id, row)}`}>
+    <Link
+      key={downObj(name, row)}
+      href="/characters/[id]"
+      as={`/characters/${downObj(id, row)}`}
+    >
       <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
-  filter: "equals",
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Character'].key === filterValue),
 });
 
 const damageCol = ({ damage = "damage" }) => ({
@@ -42,13 +47,17 @@ const episodeCol = ({
 }) => ({
   Header: "Episode",
   accessor: (row) => (
-    <Link href="/episodes/[id]" as={`/episodes/${downObj(id, row)}`}>
+    <Link
+      key={`C${downObj(campNum, row)}E${downObj(num, row)}`}
+      href="/episodes/[id]"
+      as={`/episodes/${downObj(id, row)}`}
+    >
       <a>
         C{downObj(campNum, row)}E{downObj(num, row)}
       </a>
     </Link>
   ),
-  filter: "fuzzyText",
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Episode'].key.includes(filterValue)),
 });
 
 const killsCol = ({ killCount = "kill_count" }) => ({
@@ -74,12 +83,16 @@ const notesCol = ({ notes = "notes" }) => ({
 const rollTypeCol = ({id = "roll_type.id", name = "roll_type.name"}) => ({
   Header: "Roll Type",
   accessor: (row) => (
-    <Link href="/rolls/types/[id]" as={`/rolls/types/${downObj(id, row)}`} id={downObj(name, row)}>
+    <Link
+      key={downObj(name, row)}
+      href="/rolls/types/[id]"
+      as={`/rolls/types/${downObj(id, row)}`}
+    >
       <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
-  filter: "equals",
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Roll Type'].key === filterValue),
 });
 
 const spellCol = ({ id = "spell.id", name = "spell.name" }) => ({
@@ -100,11 +113,15 @@ const timestampCol = ({
 ) => ({
   Header: "Time Stamp",
   accessor: (row) => (
-      <a href={getYoutubeLink(downObj(timestamp, row), downObj(notes, row), downObj(vodLinks, row))}>
+      <a
+        key={timeFormat(downObj(timestamp, row))}
+        href={getYoutubeLink(downObj(timestamp, row), downObj(notes, row), downObj(vodLinks, row))}
+      >
         {timeFormat(downObj(timestamp, row))}
       </a>
   ),
   disableSortBy: true,
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Time Stamp'].key.includes(filterValue)),
 });
 
 const totalCol = ({ finalVal = "final_value" }) => ({

@@ -22,7 +22,7 @@ const RollsList = ({ rolls }) => (
       <title>CRDB | Rolls</title>
     </Head>
     <FilterForm />
-    <RollTable data={rolls} showFilter defaultPageSize={200} />
+    <RollTable data={rolls} showFilter defaultPageSize={100} />
   </>
 );
 

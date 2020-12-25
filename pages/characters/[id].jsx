@@ -235,7 +235,7 @@ function CharacterDetail({ character, rolls }) {
           </>
         </TabPanel>
         <TabPanel>
-          <RollTable data={rolls} defaultPageSize={200} />
+          <RollTable data={rolls} defaultPageSize={100} showFilter />
         </TabPanel>
         <TabPanel>
           <h4>

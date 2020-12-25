@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { timeFormat, getYoutubeLink } from '../../../components/helpers';
-import { RollTable } from "../../../components/Table/tableTypes";
+import {RollTable, SpellTable} from "../../../components/Table/tableTypes";
 
 function WeaponDetail({ weapon }) {
   return (
@@ -67,6 +67,7 @@ function WeaponDetail({ weapon }) {
         totalAccessor={{ finalVal: 'roll.final_value' }}
         notesAccessor={{ notes: 'roll.notes' }}
         damageAccessor={{ damage: 'roll.damage' }}
+        showFilter
       />
     </div>
   );

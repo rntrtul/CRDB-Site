@@ -11,19 +11,19 @@ const Nav = () => {
           <a className={`navbar-item is-expanded ${router.pathname === '/' ? 'is-active' : ''}`}>Home</a>
         </Link>
         <Link href="/episodes">
-          <a className={`navbar-item is-expanded ${router.pathname === '/episodes' ? 'is-active' : ''}`}>Episodes</a>
+          <a className={`navbar-item is-expanded ${router.pathname.startsWith('/episodes') ? 'is-active' : ''}`}>Episodes</a>
         </Link>
         <Link href="/rolls">
-          <a className={`navbar-item is-expanded ${router.pathname === '/rolls' ? 'is-active' : ''}`}>Rolls</a>
+          <a className={`navbar-item is-expanded ${router.pathname.startsWith('/rolls') ? 'is-active' : ''}`}>Rolls</a>
         </Link>
         <Link href="/characters">
-          <a className={`navbar-item is-expanded ${router.pathname === '/characters' ? 'is-active' : ''}`}>Characters</a>
+          <a className={`navbar-item is-expanded ${router.pathname.startsWith('/characters') ? 'is-active' : ''}`}>Characters</a>
         </Link>
         <Link href="/spells">
-          <a className={`navbar-item is-expanded ${router.pathname === '/spells' ? 'is-active' : ''}`}>Spells</a>
+          <a className={`navbar-item is-expanded ${router.pathname.startsWith('/spells') ? 'is-active' : ''}`}>Spells</a>
         </Link>
         <Link href="/items">
-          <a className={`navbar-item is-expanded ${router.pathname === '/items' ? 'is-active' : ''}`}>Items</a>
+          <a className={`navbar-item is-expanded ${router.pathname.startsWith('/items') ? 'is-active' : ''}`}>Items</a>
         </Link>
       </div>
     </nav>

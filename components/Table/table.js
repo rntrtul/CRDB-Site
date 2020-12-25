@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   useTable, useSortBy, useFilters, useGlobalFilter, useAsyncDebounce, usePagination,
 } from 'react-table';
-import { matchSorter } from 'match-sorter';
-import Pagination from '../pagination';
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa';
+import { matchSorter } from 'match-sorter';
+import Slider from 'rc-slider';
+import Pagination from '../pagination';
+import 'rc-slider/assets/index.css';
 import regeneratorRuntime from 'regenerator-runtime';
+
+// todo: debounce filters so typing won't be slow
+
+const debounce = require('lodash.debounce');
+const { createSliderWithTooltip } = Slider;
+const Range = createSliderWithTooltip(Slider.Range);
+
+function getMinMax(arr, id) {
+  let currMin = arr.length ? arr[0].values[id] : 0;
+  let currMax = arr.length ? arr[0].values[id] : 0;
+  arr.forEach((row) => {
+    currMin = Math.min(row.values[id], currMin);
+    currMax = Math.max(row.values[id], currMax);
+  });
+  return [currMin, currMax];
+}
 
 function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
   const count = preGlobalFilteredRows.length;
@@ -37,32 +55,37 @@ function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
 }
 
 export function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
+  const [query, setQuery] = useState(filterValue);
   const count = preFilteredRows.length;
+
+  const search = debounce(() => setFilter(query !== '' ? query : undefined), 100);
+
   return (
-    <div className="fields">
-      <div className="control">
-        <input
-          className="input"
-          placeholder={`Search ${count} records...`}
-          value={filterValue || ''}
-          onChange={(e) => {
-            setFilter(e.target.value || undefined);
-          }}
-        />
-      </div>
-    </div>
+    <input
+      className="input"
+      placeholder={`Search ${count} records...`}
+      value={query || ''}
+      onChange={(e) => {
+        setQuery(e.target.value);
+        search();
+      }}
+    />
   );
 }
 
 export function SelectColumnFilter({
   column: {
-    filterValue, preFilteredRows, setFilter, id,
+    filterValue,
+    preFilteredRows,
+    setFilter,
+    id,
   },
 }) {
   const options = React.useMemo(() => {
     const availOptions = new Set();
-    preFilteredRows.forEach((row) => {
-      availOptions.add(row.values[id].props.children.props.children);
+
+    preFilteredRows.forEach(row => {
+      availOptions.add(row.values[id].key);
     });
     return [...availOptions.values()];
   }, [id, preFilteredRows]);
@@ -84,38 +107,50 @@ export function SelectColumnFilter({
 
 export function NumberRangeColumnFilter({
   column: {
-    filterValue = [], preFilteredRows, setFilter, id,
+    filterValue = [],
+    preFilteredRows,
+    setFilter,
+    id,
   },
 }) {
+  const [range, setRange] = useState([0, 0]);
+
   const [min, max] = React.useMemo(() => {
-    let currMin = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    let currMax = preFilteredRows.length ? preFilteredRows[0].values[id] : 0;
-    preFilteredRows.forEach((row) => {
-      currMin = Math.min(row.values[id], currMin);
-      currMax = Math.max(row.values[id], currMax);
-    });
-    return [currMin, currMax];
+    const minMax = getMinMax(preFilteredRows, id);
+    setRange(minMax);
+    return minMax;
+  }, [id]);
+
+  const updateFilter = debounce((newRange) => setFilter(newRange), 200);
+
+  const update = (newRange) => {
+    setRange(newRange);
+    updateFilter(newRange);
+  };
+
+  useEffect(() => {
+    const minMax = getMinMax(preFilteredRows, id);
   }, [id, preFilteredRows]);
+
+  const marks = {};
+  marks[min] = min;
+  marks[max] = max;
+  marks[range[1]] = range[1];
+  marks[range[0]] = range[0];
 
   return (
     <>
-      <input
-        value={filterValue[0] || ''}
-        type="number"
-        onChange={(e) => {
-          const val = e.target.value;
-          setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]]);
-        }}
-        placeholder={`Min ${min}`}
-      />
-      <input
-        value={filterValue[1] || ''}
-        type="number"
-        onChange={(e) => {
-          const val = e.target.value;
-          setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined]);
-        }}
-        placeholder={`Max ${max}`}
+      <p>Min: {range[0]} Max: {range[1]}</p>
+      <Range
+        allowCross={false}
+        ariaLabelForHandlers={[`min value of ${id}`, `max value of ${id}`]}
+        disabled={min === max}
+        marks={marks}
+        min={min}
+        max={max}
+        step={1}
+        onChange={update}
+        value={range}
       />
     </>
   );
@@ -176,29 +211,37 @@ function Table({
   return (
     <>
       {showFilter
-            && (
-            <>
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-              <div className="box">
-                {headerGroups.map((headerGroup) => (
-                  <div {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <p {...column.getHeaderProps()}>
-                        {column.render('Header')}
-                        <div>
-                          {column.canFilter ? column.render('Filter') : null}
-                        </div>
-                      </p>
-                    ))}
+        && (
+          <div className="box">
+            {headerGroups.map((headerGroup) => (
+              <form {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <div className="field" {...column.getHeaderProps}>
+                    <label className="label">{column.render('Header')}</label>
+                    {column.canFilter && (
+                      <div className="control">
+                        {column.render('Filter')}
+                      </div>
+                    )}
                   </div>
                 ))}
-              </div>
-            </>
-            )}
+              </form>
+            ))}
+          </div>
+        )}
+      { data.length > defaultPageSize // todo: make pagination it's own component
+      && (
+        <Pagination
+          canPreviousPage={canPreviousPage}
+          canNextPage={canNextPage}
+          gotoPage={gotoPage}
+          nextPage={nextPage}
+          pageCount={pageCount}
+          pageSize={pageSize}
+          previousPage={previousPage}
+          setPageSize={setPageSize}
+        />
+      )}
       <div className="table__wrapper">
         <table {...getTableProps()} className="table is-striped is-fullwidth is-hoverable">
           <thead>

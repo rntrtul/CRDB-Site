@@ -29,6 +29,9 @@
     "rules": {
         "react/require-default-props": [2, {
             "ignoreFunctionalComponents": true
+        }],
+        "no-trailing-spaces": ["error", {
+            "skipBlankLines": true
         }]
     }
 }

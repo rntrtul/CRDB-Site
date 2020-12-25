@@ -45,14 +45,14 @@ const Characters = ({ pc, npc }) => (
       <TabPanel>
         <ul>
           {pc.characters
-            .sort((a, b) => a.name > b.name)
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map((char) => (characterEntry(char)))}
         </ul>
       </TabPanel>
       <TabPanel>
         <ul>
           {npc.characters
-            .sort((a, b) => a.name > b.name)
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map((char) => (characterEntry(char)))}
         </ul>
       </TabPanel>

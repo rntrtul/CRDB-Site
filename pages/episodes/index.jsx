@@ -2,6 +2,9 @@ import axios from 'axios';
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import {
+  Tab, Tabs, TabList, TabPanel,
+} from 'react-tabs';
 import PropTypes from 'prop-types';
 
 const fetchData = async () => axios.get(`${process.env.DB_HOST}/episodes/api/episode`).then(
@@ -32,22 +35,28 @@ const Episodes = ({ campaignOne, campaignTwo }) => (
     <Head>
       <title>CRDB | Episodes</title>
     </Head>
-    <div className="content">
-      <div className="columns">
-        <div className="column">
-          <h1>{campaignOne[0].campaign.name}</h1>
-          <ul>
-            {campaignOne.map((ep) => epEntry(ep))}
-          </ul>
-        </div>
-        <div className="column">
-          <h1>{campaignTwo[0].campaign.name}</h1>
-          <ul>
-            {campaignTwo.map((ep) => epEntry(ep))}
-          </ul>
-        </div>
-      </div>
-    </div>
+    <Tabs selectedTabClassName="is-active">
+      <TabList className="tabs is-centered">
+        <ul>
+          <Tab>
+            <a>{campaignOne[0].campaign.name}</a>
+          </Tab>
+          <Tab>
+            <a>{campaignTwo[0].campaign.name}</a>
+          </Tab>
+        </ul>
+      </TabList>
+      <TabPanel>
+        <ul>
+          {campaignOne.map((ep) => epEntry(ep))}
+        </ul>
+      </TabPanel>
+      <TabPanel>
+        <ul>
+          {campaignTwo.map((ep) => epEntry(ep))}
+        </ul>
+      </TabPanel>
+    </Tabs>
   </>
 );
 

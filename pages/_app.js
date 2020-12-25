@@ -13,14 +13,10 @@ Router.events.on('routeChangeStart', url => {
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-export function reportWebVitals(metric) {
-  console.log(metric);
-}
-
 function MyApp({ Component, pageProps }) {
   return (
     <Layout>
-      <div className = "container is-fullhd">
+      <div className="container is-fullhd">
         <Component {...pageProps} />
       </div>
     </Layout>

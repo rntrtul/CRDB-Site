@@ -48,7 +48,7 @@ Spells.propTypes = {
   ]).isRequired,
 };
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const data = await fetchData();
   return {
     props: data,
