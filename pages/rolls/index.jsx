@@ -3,7 +3,6 @@ import Head from 'next/head';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { RollTable } from '../../components/Table/tableTypes';
-import FilterForm from '../../components/filter';
 
 const fetchData = async () => axios
   .get(`${process.env.DB_HOST}/rolls/api/roll`)
@@ -21,7 +20,6 @@ const RollsList = ({ rolls }) => (
     <Head>
       <title>CRDB | Rolls</title>
     </Head>
-    <FilterForm />
     <RollTable data={rolls} showFilter defaultPageSize={100} />
   </>
 );

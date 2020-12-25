@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getYoutubeLink, timeFormat } from "../helpers";
 import { NumberRangeColumnFilter, SelectColumnFilter } from "./table";
-import filter from "../filter";
 
 const downObj = (path, obj) => {
   const stepPath = path.split('.');
@@ -16,7 +15,10 @@ const castLevelCol = ({ castLevel = "cast_level" }) => ({
   Header: "Cast Level",
   accessor: row => downObj(castLevel, row) === 0 ? "Cantrip" : downObj(castLevel, row),
   Filter: NumberRangeColumnFilter,
-  filter: "between",
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => {
+    const val = row.values['Cast Level'] !== "Cantrip" ? row.values['Cast Level'] : 0
+    return val >= filterValue[0] && val <= filterValue[1];
+  }),
 });
 
 const characterCol = ({ id = "character.id", name = "character.name" }) => ({
@@ -98,12 +100,16 @@ const rollTypeCol = ({id = "roll_type.id", name = "roll_type.name"}) => ({
 const spellCol = ({ id = "spell.id", name = "spell.name" }) => ({
   Header: "Spell",
   accessor: (row) => (
-    <Link href="/spells/[id]" as={`/spells/${downObj(id, row)}`}>
+    <Link
+      key={downObj(name, row)}
+      href="/spells/[id]"
+      as={`/spells/${downObj(id, row)}`}
+    >
       <a>{downObj(name, row)}</a>
     </Link>
   ),
   Filter: SelectColumnFilter,
-  filter: "equals",
+  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Spell'].key === filterValue),
 });
 
 const timestampCol = ({

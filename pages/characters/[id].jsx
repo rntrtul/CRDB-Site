@@ -8,9 +8,9 @@ import ReactFrappeChart from 'react-frappe-charts';
 import React from 'react';
 import PropTypes from 'prop-types';
 import BarChart from '../../components/Charts/bar';
-import { RollTable } from '../../components/Table/tableTypes';
+import {RollTable, SpellTable} from '../../components/Table/tableTypes';
 
-function CharacterDetail({ character, rolls }) {
+function CharacterDetail({ character, rolls, casts }) {
   const normalRolls = character.roll_counts.total - character.roll_counts.advantages
                       - character.roll_counts.disadvantages;
   const rollData = [character.roll_counts.disadvantages,
@@ -235,7 +235,7 @@ function CharacterDetail({ character, rolls }) {
           </>
         </TabPanel>
         <TabPanel>
-          <RollTable data={rolls} defaultPageSize={100} showFilter />
+          <RollTable data={rolls} defaultPageSize={50} showFilter hideCharacter />
         </TabPanel>
         <TabPanel>
           <h4>
@@ -254,7 +254,7 @@ function CharacterDetail({ character, rolls }) {
           </ul>
         </TabPanel>
         <TabPanel>
-          <p>Add table of all spells cast</p>
+          <SpellTable data={casts} defaultPageSize={50} showFilter hideCharacter />
         </TabPanel>
       </Tabs>
       )}
@@ -308,10 +308,7 @@ CharacterDetail.propTypes = {
 };
 
 export async function getStaticPaths() {
-  const pageOne = (await axios.get(`${process.env.DB_HOST}/characters/api/character`)).data;
-  // const pageTwo = (await axios.get(`${process.env.DB_HOST}/characters/api/character?page=2`)).data.results;
-  const pageTwo = [];
-  const data = pageOne.concat(pageTwo);
+  const { data } = (await axios.get(`${process.env.DB_HOST}/characters/api/character`));
   const paths = data.map((character) => ({
     params: { id: character.id.toString() },
   }));
@@ -320,8 +317,9 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  const rolls = (await axios.get(`${process.env.DB_HOST}/rolls/api/roll?character=${params.id}`)).data;
-  return { props: { character, rolls } };
+  const rolls = character.rolls
+  const casts = character.casts
+  return { props: { character, rolls, casts } };
 }
 
 export default CharacterDetail;

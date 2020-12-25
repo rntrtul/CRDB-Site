@@ -56,7 +56,11 @@ function SpellDetail({ spell }) {
           datasets: [{ values: spell.top_users.map((users) => users[1]) }],
         }}
       />
-      <SpellTable data={spell.casts} />
+      <SpellTable
+        data={spell.casts}
+        hideSpell
+        title=""
+      />
     </div>
   );
 }

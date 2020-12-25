@@ -146,7 +146,8 @@ function EpisodeDetail({ episode }) {
         <SpellTable
           data={castsDisplay}
           timestampAccessor={{ vodLinks: 'vod_links' }}
-          isEpisode
+          title=""
+          hideEpisode
         />
 
         <h3>
@@ -158,7 +159,8 @@ function EpisodeDetail({ episode }) {
         <RollTable
           data={rollsDisplay}
           timestampAccessor={{ vodLinks: 'vod_links' }}
-          isEpisode
+          title=""
+          hideEpisode
         />
 
       </div>

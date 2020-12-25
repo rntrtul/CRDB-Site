@@ -8,10 +8,12 @@ import Slider from 'rc-slider';
 import Pagination from '../pagination';
 import 'rc-slider/assets/index.css';
 import regeneratorRuntime from 'regenerator-runtime';
+import TableFilter from './tableFilter';
 
 // todo: debounce filters so typing won't be slow
 
 const debounce = require('lodash.debounce');
+
 const { createSliderWithTooltip } = Slider;
 const Range = createSliderWithTooltip(Slider.Range);
 
@@ -19,8 +21,9 @@ function getMinMax(arr, id) {
   let currMin = arr.length ? arr[0].values[id] : 0;
   let currMax = arr.length ? arr[0].values[id] : 0;
   arr.forEach((row) => {
-    currMin = Math.min(row.values[id], currMin);
-    currMax = Math.max(row.values[id], currMax);
+    const curr = row.values[id] !== 'Cantrip' ? row.values[id] : 0;
+    currMin = Math.min(curr, currMin);
+    currMax = Math.max(curr, currMax);
   });
   return [currMin, currMax];
 }
@@ -87,7 +90,7 @@ export function SelectColumnFilter({
     preFilteredRows.forEach(row => {
       availOptions.add(row.values[id].key);
     });
-    return [...availOptions.values()];
+    return [...availOptions.values()].sort((a, b) => a.localeCompare(b));
   }, [id, preFilteredRows]);
 
   return (
@@ -128,10 +131,6 @@ export function NumberRangeColumnFilter({
     updateFilter(newRange);
   };
 
-  useEffect(() => {
-    const minMax = getMinMax(preFilteredRows, id);
-  }, [id, preFilteredRows]);
-
   const marks = {};
   marks[min] = min;
   marks[max] = max;
@@ -167,6 +166,7 @@ function Table({
   data,
   showFilter = false,
   defaultPageSize,
+  title,
 }) {
   const filterTypes = React.useMemo(() => ({
     fuzzyText: fuzzyTextFilterFn,
@@ -180,6 +180,7 @@ function Table({
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    rows,
     page,
     canPreviousPage,
     canNextPage,
@@ -189,11 +190,8 @@ function Table({
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, sortedData },
     prepareRow,
-    state,
-    preGlobalFilteredRows,
-    setGlobalFilter,
   } = useTable(
     {
       columns,
@@ -210,32 +208,15 @@ function Table({
 
   return (
     <>
-      {showFilter
-        && (
-          <div className="box">
-            {headerGroups.map((headerGroup) => (
-              <form {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <div className="field" {...column.getHeaderProps}>
-                    <label className="label">{column.render('Header')}</label>
-                    {column.canFilter && (
-                      <div className="control">
-                        {column.render('Filter')}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </form>
-            ))}
-          </div>
-        )}
-      { data.length > defaultPageSize // todo: make pagination it's own component
+      {showFilter && <TableFilter headerGroups={headerGroups} /> }
+      { data.length > defaultPageSize
       && (
         <Pagination
           canPreviousPage={canPreviousPage}
           canNextPage={canNextPage}
           gotoPage={gotoPage}
           nextPage={nextPage}
+          pageIndex={pageIndex}
           pageCount={pageCount}
           pageSize={pageSize}
           previousPage={previousPage}
@@ -243,6 +224,7 @@ function Table({
         />
       )}
       <div className="table__wrapper">
+        {title && <h3>{title} {rows.length}</h3>}
         <table {...getTableProps()} className="table is-striped is-fullwidth is-hoverable">
           <thead>
             {headerGroups.map((headerGroup) => (
@@ -274,13 +256,14 @@ function Table({
           </tbody>
         </table>
       </div>
-      { data.length > defaultPageSize // todo: make pagination it's own component
+      { data.length > defaultPageSize
         && (
           <Pagination
             canPreviousPage={canPreviousPage}
             canNextPage={canNextPage}
             gotoPage={gotoPage}
             nextPage={nextPage}
+            pageIndex={pageIndex}
             pageCount={pageCount}
             pageSize={pageSize}
             previousPage={previousPage}

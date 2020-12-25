@@ -21,28 +21,37 @@ function RollTable({
   data,
   defaultPageSize = publicRuntimeConfig.defaultPageSize,
   showFilter = false,
-  isEpisode = false,
   characterAccessor = {},
   damageAccessor = {},
   episodeAccessor = {},
+  hideCharacter = false,
+  hideDamage = false,
+  hideEpisode = false,
+  hideKills = false,
+  hideNatural = false,
+  hideNotes = false,
+  hiudeRollType = false,
+  hideTotal = false,
+  hideTimestamp = false,
   killsAccessor = {},
   naturalAccessor = {},
   notesAccessor = {},
   rollTypeAccessor = {},
   totalAccessor = {},
   timestampAccessor = {},
+  title = 'Rolls Count:',
 }) {
   const columns = React.useMemo(
     () => [
-      ...(isEpisode ? [] : [episodeCol(episodeAccessor)]),
-      timestampCol(timestampAccessor),
-      characterCol(characterAccessor),
-      rollTypeCol(rollTypeAccessor),
-      naturalCol(naturalAccessor),
-      totalCol(totalAccessor),
-      notesCol(notesAccessor),
-      damageCol(damageAccessor),
-      killsCol(killsAccessor),
+      ...(hideEpisode ? [] : [episodeCol(episodeAccessor)]),
+      ...(hideTimestamp ? [] : [timestampCol(timestampAccessor)]),
+      ...(hideCharacter ? [] : [characterCol(characterAccessor)]),
+      ...(hiudeRollType ? [] : [rollTypeCol(rollTypeAccessor)]),
+      ...(hideNatural ? [] : [naturalCol(naturalAccessor)]),
+      ...(hideTotal ? [] : [totalCol(totalAccessor)]),
+      ...(hideNotes ? [] : [notesCol(notesAccessor)]),
+      ...(hideDamage ? [] : [damageCol(damageAccessor)]),
+      ...(hideKills ? [] : [killsCol(killsAccessor)]),
     ], [],
   );
 
@@ -50,8 +59,9 @@ function RollTable({
     <Table
       columns={columns}
       data={data}
-      showFilter={showFilter}
       defaultPageSize={defaultPageSize}
+      showFilter={showFilter}
+      title={title}
     />);
 }
 
@@ -59,22 +69,28 @@ function SpellTable({
   data,
   defaultPageSize = publicRuntimeConfig.defaultPageSize,
   showFilter = false,
-  isEpisode = false,
   castLevelAccessor = {},
   characterAccessor = {},
   episodeAccessor = {},
+  hideCastLevel = false,
+  hideCharacter = false,
+  hideEpisode = false,
+  hideNotes = false,
+  hideSpell = false,
+  hideTimestamp = false,
   notesAccessor = {},
   spellAccessor = {},
   timestampAccessor = {},
+  title = 'Spell Cast Count:',
 }) {
   const columns = React.useMemo(
     () => [
-      ...(isEpisode ? [] : [episodeCol(episodeAccessor)]),
-      timestampCol(timestampAccessor),
-      ...(isEpisode ? [spellCol(spellAccessor)] : []),
-      characterCol(characterAccessor),
-      castLevelCol(castLevelAccessor),
-      notesCol(notesAccessor),
+      ...(hideEpisode ? [] : [episodeCol(episodeAccessor)]),
+      ...(hideTimestamp ? [] : [timestampCol(timestampAccessor)]),
+      ...(hideSpell ? [] : [spellCol(spellAccessor)]),
+      ...(hideCharacter ? [] : [characterCol(characterAccessor)]),
+      ...(hideCastLevel ? [] : [castLevelCol(castLevelAccessor)]),
+      ...(hideNotes ? [] : [notesCol(notesAccessor)]),
     ], [],
   );
 
@@ -82,8 +98,9 @@ function SpellTable({
     <Table
       columns={columns}
       data={data}
-      showFilter={showFilter}
       defaultPageSize={defaultPageSize}
+      showFilter={showFilter}
+      title={title}
     />);
 }
 
