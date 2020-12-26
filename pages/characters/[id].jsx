@@ -54,20 +54,24 @@ function CharacterDetail({
       <Head>
         <title>
           CRDB |
+          {' '}
           {name}
         </title>
       </Head>
       <h1 className="title is-2">{full_name}</h1>
       <p>
         Player:
+        {' '}
         {player?.full_name}
       </p>
       <p>
         Race:
+        {' '}
         {race.name}
       </p>
       <p>
         Character Type:
+        {' '}
         {char_type.name}
       </p>
       {char_type.name !== 'Non Player Character'

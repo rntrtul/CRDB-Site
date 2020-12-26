@@ -27,5 +27,5 @@ export default function Layout({ children, settings = {} }) {
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
-  settings: PropTypes.objectOf().isRequired,
+  settings: PropTypes.objectOf(),
 };

@@ -39,7 +39,7 @@ function RollTable({
   rollTypeAccessor = {},
   totalAccessor = {},
   timestampAccessor = {},
-  title = 'Rolls Count:',
+  title = 'Roll Count:',
 }) {
   const columns = React.useMemo(
     () => [
@@ -104,7 +104,52 @@ function SpellTable({
     />);
 }
 
+function PotionTable({
+  data,
+  defaultPageSize = publicRuntimeConfig.defaultPageSize,
+  showFilter = false,
+  episodeAccessor = {},
+  hideBy = false,
+  hideEpisode = false,
+  hideNotes = false,
+  hideTimestamp = false,
+  hideTo = false,
+  byAccessor = {
+    id: 'by.id',
+    name: 'by.name',
+    header: 'By',
+  },
+  notesAccessor = {},
+  timestampAccessor = {},
+  toAccessor = {
+    id: 'to.id',
+    name: 'to.name',
+    header: 'To',
+  },
+  title = 'Usage Count:',
+}) {
+  const columns = React.useMemo(
+    () => [
+      ...(hideEpisode ? [] : [episodeCol(episodeAccessor)]),
+      ...(hideTimestamp ? [] : [timestampCol(timestampAccessor)]),
+      ...(hideBy ? [] : [characterCol(byAccessor)]),
+      ...(hideTo ? [] : [characterCol(toAccessor)]),
+      ...(hideNotes ? [] : [notesCol(notesAccessor)]),
+    ], [],
+  );
+
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      defaultPageSize={defaultPageSize}
+      showFilter={showFilter}
+      title={title}
+    />);
+}
+
 export {
+  PotionTable,
   RollTable,
   SpellTable,
 };

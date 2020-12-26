@@ -37,11 +37,11 @@ function WeaponDetail({
       <p>This is not damage but to attack (next roll should be damage)</p>
       <p>
         Total Damage Done With:
-        {dmg_total[0].final_total}
+        {dmg_total.final_total}
       </p>
       <p>
         Total Damage Contributated:
-        {dmg_total[1].nat_total}
+        {dmg_total.nat_total}
       </p>
       <p>
         Total uses:
@@ -50,6 +50,15 @@ function WeaponDetail({
 
       <RollTable
         data={uses}
+        characterAccessor={{
+          id: 'roll.character.id',
+          name: 'roll.character.name',
+        }}
+        episodeAccessor={{
+          id: 'roll.episode.id',
+          campNum: 'roll.episode.campaign_num',
+          num: 'roll.episode.num',
+        }}
         timestampAccessor={{
           timestamp: 'roll.timestamp',
           notes: 'roll.notes',
@@ -58,15 +67,6 @@ function WeaponDetail({
         rollTypeAccessor={{
           id: 'roll.roll_type.id',
           name: 'roll.roll_type.name',
-        }}
-        episodeAccessor={{
-          id: 'roll.episode.id',
-          campNum: 'roll.episode.campaign_num',
-          num: 'roll.episode.num',
-        }}
-        characterAccessor={{
-          id: 'roll.character.id',
-          name: 'roll.character.name',
         }}
         naturalAccessor={{ natVal: 'roll.natural_value' }}
         totalAccessor={{ finalVal: 'roll.final_value' }}
@@ -80,14 +80,18 @@ function WeaponDetail({
 
 WeaponDetail.propTypes = {
   weapon: PropTypes.shape({
-    damages: PropTypes.array,
-    dmg_total: PropTypes.array,
+    damages: PropTypes.arrayOf(PropTypes.shape({
+      die_num: PropTypes.number,
+      modifier: PropTypes.number,
+    })),
+    dmg_total: PropTypes.shape({
+      final_total: PropTypes.number,
+      nat_total: PropTypes.number,
+    }),
     name: PropTypes.string,
-    uses: PropTypes.arrayOf([
-      PropTypes.shape({
-        roll: PropTypes.object,
-      }),
-    ]),
+    uses: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+    })),
   }).isRequired,
 };
 

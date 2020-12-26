@@ -23,6 +23,7 @@ function SpellDetail({
       <Head>
         <title>
           CRDB |
+          {' '}
           {name}
         </title>
       </Head>
@@ -32,22 +33,25 @@ function SpellDetail({
         {cantrip === false && (
         <span>
           Level:
+          {' '}
           {level}
         </span>
         )}
       </p>
       <p>
         Total casts:
+        {' '}
         {casts.length}
       </p>
       <p>
         Times cast above level:
+        {' '}
         {aboveCast}
       </p>
       <h5 className="heading">Top Casters:</h5>
       <ol>
         {top_users.map((rank) => (
-          <li>
+          <li key={rank[0]}>
             {rank[0]}
             {' '}
             (

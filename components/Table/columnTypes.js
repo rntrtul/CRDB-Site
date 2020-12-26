@@ -21,8 +21,8 @@ const castLevelCol = ({ castLevel = "cast_level" }) => ({
   }),
 });
 
-const characterCol = ({ id = "character.id", name = "character.name" }) => ({
-  Header: "Character",
+const characterCol = ({ id = "character.id", name = "character.name", header = "Character"}) => ({
+  Header: header,
   accessor: (row) => (
     <Link
       key={downObj(name, row)}

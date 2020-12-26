@@ -18,14 +18,10 @@ const Items = ({ potions, weapons }) => (
           <div className="tabs is-centered">
             <ul>
               <Tab>
-                <li>
                   <a>Weapons</a>
-                </li>
               </Tab>
               <Tab>
-                <li>
-                  <a>Potions</a>
-                </li>
+                <a>Potions</a>
               </Tab>
             </ul>
           </div>
@@ -60,12 +56,16 @@ const Items = ({ potions, weapons }) => (
 );
 
 Items.propTypes = {
-  potions: PropTypes.shape({
-    results: PropTypes.array,
-  }).isRequired,
-  weapons: PropTypes.shape({
-    results: PropTypes.array,
-  }).isRequired,
+  potions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    description: PropTypes.string,
+  })).isRequired,
+  weapons: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    attack_bonus: PropTypes.number,
+  })).isRequired,
 };
 
 const fetchData = async (url) => axios.get(url).then(

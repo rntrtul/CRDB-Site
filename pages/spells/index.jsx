@@ -25,7 +25,7 @@ const Spells = ({ spells }) => (
     <div className="content">
       <ul>
         {spells.map((spell) => (
-          <li key="spell.name">
+          <li key={spell.name}>
             <Link href="/spells/[id]" as={`/spells/${spell.id}`}>
               <a>{spell.name}</a>
             </Link>
@@ -43,9 +43,13 @@ const Spells = ({ spells }) => (
 );
 
 Spells.propTypes = {
-  spells: PropTypes.arrayOf([
-    PropTypes.object,
-  ]).isRequired,
+  spells: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    cantrip: PropTypes.bool,
+    cast_count: PropTypes.number,
+    level: PropTypes.number,
+    name: PropTypes.string,
+  })).isRequired,
 };
 
 export const getStaticProps = async () => {

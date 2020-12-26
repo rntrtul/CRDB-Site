@@ -5,10 +5,11 @@ import {
 import { FaCaretUp, FaCaretDown } from 'react-icons/fa';
 import { matchSorter } from 'match-sorter';
 import Slider from 'rc-slider';
-import Pagination from '../pagination';
 import 'rc-slider/assets/index.css';
 import regeneratorRuntime from 'regenerator-runtime';
 import TableFilter from './tableFilter';
+import { getKey } from '../helpers';
+import Pagination from '../pagination';
 
 // todo: debounce filters so typing won't be slow
 
@@ -247,10 +248,11 @@ function Table({
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {page.map((row, index) => {
+            {page.map((row) => {
               prepareRow(row);
+              const key = getKey(row);
               return (
-                <tr {...row.getRowProps()} key={index}>
+                <tr {...row.getRowProps()} key={key}>
                   {row.cells.map((cell) => <td {...cell.getCellProps()}>{cell.render('Cell')}</td>)}
                 </tr>
               );
