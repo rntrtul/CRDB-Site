@@ -4,18 +4,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { timeFormat, getYoutubeLink } from '../../../components/helpers';
 
-function PotionDetail({ potion }) {
+function PotionDetail({
+  potion: {
+    description,
+    name,
+    uses,
+  },
+}) {
   return (
     <div className="content">
-      <h1>{potion.name}</h1>
+      <h1>{name}</h1>
       <p className="subtitle">
-        {potion.description}
+        {description}
         {' '}
         (should be description here)
       </p>
       <h4>
         All Uses (
-        {potion.uses.length}
+        {uses.length}
         ):
       </h4>
       <table className="table is-striped is-fullwidth">
@@ -29,7 +35,7 @@ function PotionDetail({ potion }) {
           </tr>
         </thead>
         <tbody>
-          {potion.uses.map((use) => (
+          {uses.map((use) => (
             <tr>
               <td>
                 <Link href="/episodes/[id]" as={`/episodes/${use.episode.id}`}>

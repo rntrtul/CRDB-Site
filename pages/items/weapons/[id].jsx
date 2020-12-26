@@ -1,16 +1,21 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { timeFormat, getYoutubeLink } from '../../../components/helpers';
-import {RollTable, SpellTable} from "../../../components/Table/tableTypes";
+import { RollTable } from '../../../components/Table/tableTypes';
 
-function WeaponDetail({ weapon }) {
+function WeaponDetail({
+  weapon: {
+    damages,
+    dmg_total,
+    name,
+    uses,
+  },
+}) {
   return (
     <div className="content">
-      <h1>{weapon.name}</h1>
+      <h1>{name}</h1>
       <p className="subtitle">
-        { weapon.damages.map((dt, i) => (
+        { damages.map((dt, i) => (
           <span>
             {dt.die_num}
             d
@@ -25,26 +30,26 @@ function WeaponDetail({ weapon }) {
             )}
             {' '}
             {dt.damage_type > 0 && dt.damage_type.name}
-            {i < weapon.damages.length - 1 && <b> + </b>}
+            {i < damages.length - 1 && <b> + </b>}
           </span>
         ))}
       </p>
       <p>This is not damage but to attack (next roll should be damage)</p>
       <p>
         Total Damage Done With:
-        {weapon.dmg_total[0].final_total}
+        {dmg_total[0].final_total}
       </p>
       <p>
         Total Damage Contributated:
-        {weapon.dmg_total[1].nat_total}
+        {dmg_total[1].nat_total}
       </p>
       <p>
         Total uses:
-        {weapon.uses.length}
+        {uses.length}
       </p>
 
       <RollTable
-        data={weapon.uses}
+        data={uses}
         timestampAccessor={{
           timestamp: 'roll.timestamp',
           notes: 'roll.notes',

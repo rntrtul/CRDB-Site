@@ -2,35 +2,43 @@ import axios from 'axios';
 import Head from 'next/head';
 import PropType from 'prop-types';
 import React from 'react';
+import ReactFrappeChart from 'react-frappe-charts';
 import { SpellTable } from '../../components/Table/tableTypes';
-import ReactFrappeChart from "react-frappe-charts";
 
-function SpellDetail({ spell }) {
+function SpellDetail({
+  spell: {
+    cantrip,
+    casts,
+    level,
+    name,
+    top_users,
+  },
+}) {
   let aboveCast = 0;
-  spell.casts.map(
-    (casting) => casting.cast_level > spell.level && aboveCast++,
+  casts.map(
+    (casting) => casting.cast_level > level && aboveCast++,
   );
   return (
     <div className="content">
       <Head>
         <title>
           CRDB |
-          {spell.name}
+          {name}
         </title>
       </Head>
-      <p className="title">{spell.name}</p>
+      <p className="title">{name}</p>
       <p className="subtitle">
-        {spell.cantrip === true && <span>Cantrip</span>}
-        {spell.cantrip === false && (
+        {cantrip === true && <span>Cantrip</span>}
+        {cantrip === false && (
         <span>
           Level:
-          {spell.level}
+          {level}
         </span>
         )}
       </p>
       <p>
         Total casts:
-        {spell.casts.length}
+        {casts.length}
       </p>
       <p>
         Times cast above level:
@@ -38,7 +46,7 @@ function SpellDetail({ spell }) {
       </p>
       <h5 className="heading">Top Casters:</h5>
       <ol>
-        {spell.top_users.map((rank) => (
+        {top_users.map((rank) => (
           <li>
             {rank[0]}
             {' '}
@@ -52,12 +60,12 @@ function SpellDetail({ spell }) {
         type="percentage"
         title="Top Casters"
         data={{
-          labels: spell.top_users.map((users) => users[0]),
-          datasets: [{ values: spell.top_users.map((users) => users[1]) }],
+          labels: top_users.map((users) => users[0]),
+          datasets: [{ values: top_users.map((users) => users[1]) }],
         }}
       />
       <SpellTable
-        data={spell.casts}
+        data={casts}
         hideSpell
         title=""
       />
@@ -88,7 +96,7 @@ export async function getStaticProps({ params }) {
   const spell = (
     await axios.get(`${process.env.DB_HOST}/spells/api/spell/${params.id}`)).data;
 
-  return { props: { spell }};
+  return { props: { spell } };
 }
 
 export default SpellDetail;

@@ -8,50 +8,69 @@ import ReactFrappeChart from 'react-frappe-charts';
 import React from 'react';
 import PropTypes from 'prop-types';
 import BarChart from '../../components/Charts/bar';
-import {RollTable, SpellTable} from '../../components/Table/tableTypes';
+import { RollTable, SpellTable } from '../../components/Table/tableTypes';
 
-function CharacterDetail({ character, rolls, casts }) {
-  const normalRolls = character.roll_counts.total - character.roll_counts.advantages
-                      - character.roll_counts.disadvantages;
-  const rollData = [character.roll_counts.disadvantages,
-    character.roll_counts.advantages, normalRolls];
+function CharacterDetail({
+  character: {
+    appearances,
+    campaign,
+    char_type,
+    casts,
+    damage_total,
+    ep_totals,
+    full_name,
+    hdywt_count,
+    kill_count,
+    name,
+    nat_ones,
+    nat_twenty,
+    player,
+    race,
+    rolls,
+    roll_counts,
+    top_roll_types,
+    top_spells,
+  },
+}) {
+  const normalRolls = roll_counts.total - roll_counts.advantages - roll_counts.disadvantages;
+  const rollData = [roll_counts.disadvantages, roll_counts.advantages, normalRolls];
   const rollColours = ['red', 'blue', 'light-blue'];
   const rollLabels = ['Disadvantage', 'Advantage', 'Normal'];
 
-  const insertType = (num, name, colour, colourArr, dataArr, labelArr) => {
+  const insertType = (num, label, colour, colourArr, dataArr, labelArr) => {
     dataArr.splice(-1, 0, num);
     // eslint-disable-next-line no-param-reassign
     dataArr[-1] = rollData[-1] - rollData[-2];
-    labelArr.splice(-1, 0, name);
+    labelArr.splice(-1, 0, label);
     colourArr.splice(-1, 0, colour);
   };
 
-  if (character.roll_counts.luck !== 0) insertType(character.roll_counts.luck, 'Luck', 'green', rollColours, rollData, rollLabels);
-  if (character.roll_counts.fate !== 0) insertType(character.roll_counts.fate, 'Fate', 'orange', rollColours, rollData, rollLabels);
-  if (character.roll_counts.decahedron !== 0) insertType(character.roll_counts.decahedron, 'Fragment of Possibility', 'purple', rollColours, rollData, rollLabels);
+  if (roll_counts.luck !== 0) insertType(roll_counts.luck, 'Luck', 'green', rollColours, rollData, rollLabels);
+  if (roll_counts.fate !== 0) insertType(roll_counts.fate, 'Fate', 'orange', rollColours, rollData, rollLabels);
+  if (roll_counts.decahedron !== 0) insertType(roll_counts.decahedron, 'Fragment of Possibility', 'purple', rollColours, rollData, rollLabels);
 
   return (
     <div className="content">
       <Head>
         <title>
           CRDB |
-          {character.name}
+          {name}
         </title>
       </Head>
-      <h1 className="title is-2">{character.full_name}</h1>
+      <h1 className="title is-2">{full_name}</h1>
       <p>
         Player:
-        {character.player?.full_name}
+        {player?.full_name}
       </p>
       <p>
         Race:
-        {character.race.name}
+        {race.name}
       </p>
       <p>
         Character Type:
-        {character.char_type.name}
+        {char_type.name}
       </p>
-      {character.char_type.name !== 'Non Player Character'
+      {char_type.name !== 'Non Player Character'
       && (
       <Tabs selectedTabClassName="is-active">
         <TabList className="tabs is-centered">
@@ -80,7 +99,7 @@ function CharacterDetail({ character, rolls, casts }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Damage Dealt</p>
-                        <p className="title">{character.damage_total}</p>
+                        <p className="title">{damage_total}</p>
                       </div>
                     </div>
                   </div>
@@ -92,7 +111,7 @@ function CharacterDetail({ character, rolls, casts }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Natural 1&apos;s</p>
-                        <p className="title">{character.nat_ones}</p>
+                        <p className="title">{nat_ones}</p>
                       </div>
                     </div>
                   </div>
@@ -104,7 +123,7 @@ function CharacterDetail({ character, rolls, casts }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Natural 20&apos;s</p>
-                        <p className="title">{character.nat_twenty}</p>
+                        <p className="title">{nat_twenty}</p>
                       </div>
                     </div>
                   </div>
@@ -116,7 +135,7 @@ function CharacterDetail({ character, rolls, casts }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">HDYWTDT</p>
-                        <p className="title">{character.hdywt_count}</p>
+                        <p className="title">{hdywt_count}</p>
                       </div>
                     </div>
                   </div>
@@ -128,7 +147,7 @@ function CharacterDetail({ character, rolls, casts }) {
                     <div className="level-item has-text-centered">
                       <div>
                         <p className="heading">Kills</p>
-                        <p className="title">{character.kill_count}</p>
+                        <p className="title">{kill_count}</p>
                       </div>
                     </div>
                   </div>
@@ -138,7 +157,7 @@ function CharacterDetail({ character, rolls, casts }) {
 
             <ReactFrappeChart
               type="percentage"
-              title={`Rolls (${character.roll_counts.total} total)`}
+              title={`Rolls (${roll_counts.total} total)`}
               colors={rollColours}
               barOptions={{ depth: 0 }}
               data={{
@@ -154,8 +173,8 @@ function CharacterDetail({ character, rolls, casts }) {
                     title="Top Roll Types"
                     colors={['blue']}
                     yToolTip=" roll"
-                    labels={character.top_roll_types.map((type) => type[0])}
-                    datasets={[{ values: character.top_roll_types.map((type) => type[1]) }]}
+                    labels={top_roll_types.map((type) => type[0])}
+                    datasets={[{ values: top_roll_types.map((type) => type[1]) }]}
                     valuesOverPoints
                   />
                 </div>
@@ -167,12 +186,12 @@ function CharacterDetail({ character, rolls, casts }) {
                     colors={['green']}
                     xToolTip="EP "
                     yToolTip=" roll"
-                    labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: character.ep_totals?.rolls }]}
+                    labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: ep_totals?.rolls }]}
                     yMarkers={[{
                       label: 'Avg.',
-                      value: character.ep_totals?.rolls.reduce((a, b) => a + b)
-                        / character.appearances.length,
+                      value: ep_totals?.rolls.reduce((a, b) => a + b)
+                        / appearances.length,
                       options: { labelPos: 'left' },
                     }]}
                   />
@@ -180,16 +199,16 @@ function CharacterDetail({ character, rolls, casts }) {
               </div>
             </div>
 
-            {character.top_spells.total_count > 0
+            {top_spells.total_count > 0
             && (
             <div className="tile is-ancestor">
               <div className="tile is-parent">
                 <div className="tile is-child">
                   <BarChart
-                    title={`Top Spells Cast (${character.top_spells.total_count} total)`}
+                    title={`Top Spells Cast (${top_spells.total_count} total)`}
                     colors={['light-blue']}
-                    labels={character.top_spells.list.map((spell) => spell[0])}
-                    datasets={[{ values: character.top_spells.list.map((spell) => spell[1]) }]}
+                    labels={top_spells.list.map((spell) => spell[0])}
+                    datasets={[{ values: top_spells.list.map((spell) => spell[1]) }]}
                     yToolTip=" cast"
                     valuesOverPoints
                   />
@@ -202,12 +221,12 @@ function CharacterDetail({ character, rolls, casts }) {
                     colors={['light-green']}
                     xToolTip="EP "
                     yToolTip=" cast"
-                    labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: character.ep_totals?.casts }]}
+                    labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
+                    datasets={[{ values: ep_totals?.casts }]}
                     yMarkers={[{
                       label: 'Avg.',
-                      value: character.ep_totals?.casts.reduce((a, b) => a + b)
-                        / character.appearances.length,
+                      value: ep_totals?.casts.reduce((a, b) => a + b)
+                        / appearances.length,
                       options: { labelPos: 'left' },
                     }]}
                   />
@@ -222,12 +241,12 @@ function CharacterDetail({ character, rolls, casts }) {
                 colors={['blue']}
                 xToolTip="Ep "
                 yToolTip=" point"
-                labels={[...Array(character.campaign?.length).keys()].map((x) => x + 1)}
-                datasets={[{ values: character.ep_totals?.dmg_dealt }]}
+                labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
+                datasets={[{ values: ep_totals?.dmg_dealt }]}
                 yMarkers={[{
                   label: 'Avg.',
-                  value: character.ep_totals?.dmg_dealt.reduce((a, b) => a + b)
-                    / character.appearances.length,
+                  value: ep_totals?.dmg_dealt.reduce((a, b) => a + b)
+                    / appearances.length,
                   options: { labelPos: 'left' },
                 }]}
               />
@@ -240,11 +259,11 @@ function CharacterDetail({ character, rolls, casts }) {
         <TabPanel>
           <h4>
             Appears in (
-            {character.appearances.length}
+            {appearances.length}
             ):
           </h4>
           <ul>
-            {character.appearances.map((appearance) => (
+            {appearances.map((appearance) => (
               <li key={appearance.episode}>
                 <Link href={`/episodes/${appearance.episode}`}>
                   <a>{appearance.episode_title}</a>
@@ -317,9 +336,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  const rolls = character.rolls
-  const casts = character.casts
-  return { props: { character, rolls, casts } };
+  return { props: { character } };
 }
 
 export default CharacterDetail;
