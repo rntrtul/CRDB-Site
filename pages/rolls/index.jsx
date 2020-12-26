@@ -15,19 +15,20 @@ const fetchData = async () => axios
     rolls: null,
   }));
 
-const RollsList = ({ rolls }) => (
-  <>
+const RollsList = ({ rolls = {} }) => (
+  <div className="content">
     <Head>
       <title>CRDB | Rolls</title>
     </Head>
-    <RollTable data={rolls} showFilter defaultPageSize={100} />
-  </>
+    <h1>All Rolls</h1>
+    <RollTable data={rolls} showFilter defaultPageSize={50} />
+  </div>
 );
 
 RollsList.propTypes = {
-  rolls: PropTypes.shape({
-    results: PropTypes.array,
-  }).isRequired,
+  rolls: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+  })).isRequired,
 };
 
 export const getStaticProps = async () => {
