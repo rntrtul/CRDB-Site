@@ -16,6 +16,7 @@ export default function Layout({ children, settings = {} }) {
         <div className="content has-text-centered">
           <p>
             All data is from
+            {' '}
             <a href="https://www.critrolestats.com/">Crit Role Stats</a>
           </p>
         </div>

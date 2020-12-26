@@ -62,11 +62,11 @@ function EpisodeDetail({
       <div className="content is-medium">
         <div className="is-flex is-justify-content-space-between is-align-items-center">
           {prev_episode &&
-          <Link href="/episodes/[id]" as={`/episodes/${prev_episode}`}>
-            <a>
-              <GrLinkPrevious size={32}/>
-            </a>
-          </Link>
+            <Link href="/episodes/[id]" as={`/episodes/${prev_episode}`}>
+              <a>
+                <GrLinkPrevious size={32} />
+              </a>
+            </Link>
           }
           <h1>
             {title}
@@ -78,19 +78,23 @@ function EpisodeDetail({
             )
           </h1>
           {next_episode &&
-          <Link href="/episodes/[id]" as={`/episodes/${next_episode}`}>
-            <a>
-              <GrLinkNext size={32}/>
-            </a>
-          </Link>
+            <Link href="/episodes/[id]" as={`/episodes/${next_episode}`}>
+              <a>
+                <GrLinkNext size={32} />
+              </a>
+            </Link>
           }
         </div>
-        <a href={getYoutubeLink(0, rollsDisplay[0].notes, rollsDisplay[0].vod_links)}>
-          <GrYoutube style={{color: '#FF0000'}} size={32}/>
-        </a>
-        <a href="#" className="ml-4">
-          <FaTwitch style={{color: '#6441A4'}} size={29}/>
-        </a>
+        {rollsDisplay.length > 0 &&
+          <>
+            <a href={getYoutubeLink(0, rollsDisplay[0]?.notes, rollsDisplay[0]?.vod_links)}>
+              <GrYoutube style={{ color: '#FF0000' }} size={32} />
+            </a>
+            <a href="#" className="ml-4">
+              <FaTwitch style={{ color: '#6441A4' }} size={29} />
+            </a>
+          </>
+        }
 
         <h4>{air_date}</h4>
         <p className="is-medium">{description}</p>

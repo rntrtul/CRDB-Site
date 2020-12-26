@@ -1,5 +1,7 @@
 import Head from 'next/head';
 
+// todo: Implement home page and an about page
+
 export default function Home() {
   return (
     <>
