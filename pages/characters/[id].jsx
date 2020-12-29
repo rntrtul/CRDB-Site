@@ -4,13 +4,11 @@ import Head from 'next/head';
 import {
   Tab, Tabs, TabList, TabPanel,
 } from 'react-tabs';
-import ReactFrappeChart from 'react-frappe-charts';
 import React from 'react';
 import PropTypes from 'prop-types';
-import BarChart from '../../components/Charts/bar';
 import { RollTable, SpellTable } from '../../components/Table/tableTypes';
+import CharacterStats from '../../components/Stats/characterStats';
 
-// todo: split stats tab into own component
 // todo: make a central file with all object (roll, episode) for smaller proptypes
 
 function CharacterDetail({
@@ -35,23 +33,6 @@ function CharacterDetail({
     top_spells,
   },
 }) {
-  const normalRolls = roll_counts.total - roll_counts.advantages - roll_counts.disadvantages;
-  const rollData = [roll_counts.disadvantages, roll_counts.advantages, normalRolls];
-  const rollColours = ['red', 'blue', 'light-blue'];
-  const rollLabels = ['Disadvantage', 'Advantage', 'Normal'];
-
-  const insertType = (num, label, colour, colourArr, dataArr, labelArr) => {
-    dataArr.splice(-1, 0, num);
-    // eslint-disable-next-line no-param-reassign
-    dataArr[-1] = rollData[-1] - rollData[-2];
-    labelArr.splice(-1, 0, label);
-    colourArr.splice(-1, 0, colour);
-  };
-
-  if (roll_counts.luck !== 0) insertType(roll_counts.luck, 'Luck', 'green', rollColours, rollData, rollLabels);
-  if (roll_counts.fate !== 0) insertType(roll_counts.fate, 'Fate', 'orange', rollColours, rollData, rollLabels);
-  if (roll_counts.decahedron !== 0) insertType(roll_counts.decahedron, 'Fragment of Possibility', 'purple', rollColours, rollData, rollLabels);
-
   return (
     <div className="content">
       <Head>
@@ -98,167 +79,19 @@ function CharacterDetail({
         </TabList>
 
         <TabPanel>
-          <>
-            <div className="tile is-ancestor">
-              <div className="tile is-parent">
-                <div className="tile is-child box">
-                  <div className="level is-mobile">
-                    <div className="level-item has-text-centered">
-                      <div>
-                        <p className="heading">Damage Dealt</p>
-                        <p className="title">{damage_total}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child box">
-                  <div className="level is-mobile">
-                    <div className="level-item has-text-centered">
-                      <div>
-                        <p className="heading">Natural 1&apos;s</p>
-                        <p className="title">{nat_ones}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child box">
-                  <div className="level is-mobile">
-                    <div className="level-item has-text-centered">
-                      <div>
-                        <p className="heading">Natural 20&apos;s</p>
-                        <p className="title">{nat_twenty}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child box">
-                  <div className="level is-mobile">
-                    <div className="level-item has-text-centered">
-                      <div>
-                        <p className="heading">HDYWTDT</p>
-                        <p className="title">{hdywt_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child box">
-                  <div className="level is-mobile">
-                    <div className="level-item has-text-centered">
-                      <div>
-                        <p className="heading">Kills</p>
-                        <p className="title">{kill_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <ReactFrappeChart
-              type="percentage"
-              title={`Rolls (${roll_counts.total} total)`}
-              colors={rollColours}
-              barOptions={{ depth: 0 }}
-              data={{
-                labels: rollLabels,
-                datasets: [{ values: rollData }],
-              }}
+            <CharacterStats
+              appearances={appearances}
+              campaign={campaign}
+              damageTotal={damage_total}
+              epTotals={ep_totals}
+              hdywtCount={hdywt_count}
+              killCount={kill_count}
+              natOnes={nat_ones}
+              natTwenty={nat_twenty}
+              rollCounts={roll_counts}
+              topRollTypes={top_roll_types}
+              topSpells={top_spells}
             />
-
-            <div className="tile is-ancestor">
-              <div className="tile is-parent">
-                <div className="tile is-child">
-                  <BarChart
-                    title="Top Roll Types"
-                    colors={['blue']}
-                    yToolTip=" roll"
-                    labels={top_roll_types.map((type) => type[0])}
-                    datasets={[{ values: top_roll_types.map((type) => type[1]) }]}
-                    valuesOverPoints
-                  />
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child no_x_axis">
-                  <BarChart
-                    title="Rolls Per Episode"
-                    colors={['green']}
-                    xToolTip="EP "
-                    yToolTip=" roll"
-                    labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: ep_totals?.rolls }]}
-                    yMarkers={[{
-                      label: 'Avg.',
-                      value: ep_totals?.rolls.reduce((a, b) => a + b)
-                        / appearances.length,
-                      options: { labelPos: 'left' },
-                    }]}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {top_spells.total_count > 0
-            && (
-            <div className="tile is-ancestor">
-              <div className="tile is-parent">
-                <div className="tile is-child">
-                  <BarChart
-                    title={`Top Spells Cast (${top_spells.total_count} total)`}
-                    colors={['light-blue']}
-                    labels={top_spells.list.map((spell) => spell[0])}
-                    datasets={[{ values: top_spells.list.map((spell) => spell[1]) }]}
-                    yToolTip=" cast"
-                    valuesOverPoints
-                  />
-                </div>
-              </div>
-              <div className="tile is-parent">
-                <div className="tile is-child no_x_axis">
-                  <BarChart
-                    title="Cast Per Epiosde"
-                    colors={['light-green']}
-                    xToolTip="EP "
-                    yToolTip=" cast"
-                    labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
-                    datasets={[{ values: ep_totals?.casts }]}
-                    yMarkers={[{
-                      label: 'Avg.',
-                      value: ep_totals?.casts.reduce((a, b) => a + b)
-                        / appearances.length,
-                      options: { labelPos: 'left' },
-                    }]}
-                  />
-                </div>
-              </div>
-
-            </div>
-            )}
-            <div className="no_x_axis">
-              <BarChart
-                title="Damage Dealt Per Episode"
-                colors={['blue']}
-                xToolTip="Ep "
-                yToolTip=" point"
-                labels={[...Array(campaign?.length).keys()].map((x) => x + 1)}
-                datasets={[{ values: ep_totals?.dmg_dealt }]}
-                yMarkers={[{
-                  label: 'Avg.',
-                  value: ep_totals?.dmg_dealt.reduce((a, b) => a + b)
-                    / appearances.length,
-                  options: { labelPos: 'left' },
-                }]}
-              />
-            </div>
-          </>
         </TabPanel>
         <TabPanel>
           <RollTable data={rolls} defaultPageSize={50} showFilter hideCharacter />
