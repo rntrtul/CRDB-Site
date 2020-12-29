@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   useTable, useSortBy, useFilters, useGlobalFilter, useAsyncDebounce, usePagination,
 } from 'react-table';
@@ -12,6 +12,7 @@ import { getKey } from '../helpers';
 import Pagination from '../pagination';
 
 // todo: debounce filters so typing won't be slow
+// todo: look into debounce of number slider
 
 const debounce = require('lodash.debounce');
 
@@ -140,21 +141,17 @@ export function NumberRangeColumnFilter({
   marks[range[0]] = range[0];
 
   return (
-    <>
-      <p>Min: {range[0]} Max: {range[1]}</p>
-      <p>{id}</p>
-      <Range
-        allowCross={false}
-        ariaLabelForHandlers={[`min value of ${id}`, `max value of ${id}`]}
-        disabled={min === max}
-        marks={marks}
-        min={min}
-        max={max}
-        step={1}
-        onChange={update}
-        value={range}
-      />
-    </>
+    <Range
+      allowCross={false}
+      ariaLabelForHandlers={[`min value of ${id}`, `max value of ${id}`]}
+      disabled={min === max}
+      marks={marks}
+      min={min}
+      max={max}
+      step={1}
+      onChange={update}
+      value={range}
+    />
   );
 }
 

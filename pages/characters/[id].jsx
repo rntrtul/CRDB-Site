@@ -10,6 +10,9 @@ import PropTypes from 'prop-types';
 import BarChart from '../../components/Charts/bar';
 import { RollTable, SpellTable } from '../../components/Table/tableTypes';
 
+// todo: split stats tab into own component
+// todo: make a central file with all object (roll, episode) for smaller proptypes
+
 function CharacterDetail({
   character: {
     appearances,

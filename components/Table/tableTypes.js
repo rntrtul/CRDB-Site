@@ -108,7 +108,7 @@ function PotionTable({
   data,
   defaultPageSize = publicRuntimeConfig.defaultPageSize,
   showFilter = false,
-  episodeAccessor = {},
+  episodeAccessor = { campNum: 'episode.campaign.num' },
   hideBy = false,
   hideEpisode = false,
   hideNotes = false,

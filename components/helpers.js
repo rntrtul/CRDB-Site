@@ -1,6 +1,7 @@
 export function getYoutubeLink(time, notes, vodLinks) {
   // for twitch links handle in here (since it could be 1 index too) or in the else for non p2
   // change to check first is actually yt
+
   let ytLink = `https://youtu.be/${vodLinks[0].link_key}?t=${time}`;
   if (notes.startsWith('p2')) {
     ytLink = `https://youtu.be/${vodLinks[1].link_key}?t=${time}`;
@@ -30,7 +31,7 @@ export function getKey(row) {
 
   const character = getCellById(row, 'Character');
   const total = getCellById(row, 'Total').value;
-  if (character) return timestamp + character.value.key + total + notes; // is char roll table (no char col)
+  if (character) return timestamp + character.value.key + total + notes; // char roll table (no char col)
 
   return timestamp + total + notes; // is normal roll table
 }

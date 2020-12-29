@@ -11,6 +11,8 @@ const downObj = (path, obj) => {
   return curr;
 }
 
+// todo: make text based filters better (and for all support empty value as a match)
+
 const castLevelCol = ({ castLevel = "cast_level" }) => ({
   Header: "Cast Level",
   accessor: row => downObj(castLevel, row) === 0 ? "Cantrip" : downObj(castLevel, row),
@@ -123,6 +125,8 @@ const timestampCol = ({
       <a
         key={timeFormat(downObj(timestamp, row))}
         href={getYoutubeLink(downObj(timestamp, row), downObj(notes, row), downObj(vodLinks, row))}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {timeFormat(downObj(timestamp, row))}
       </a>

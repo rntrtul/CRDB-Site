@@ -25,6 +25,9 @@ const Nav = () => {
         <Link href="/items">
           <a className={`navbar-item is-expanded ${router.pathname.startsWith('/items') ? 'is-active' : ''}`}>Items</a>
         </Link>
+        <Link href="/about">
+          <a className={`navbar-item is-expanded ${router.pathname === '/about' ? 'is-active' : ''}`}>About</a>
+        </Link>
       </div>
     </nav>
   );

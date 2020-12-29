@@ -85,16 +85,17 @@ function EpisodeDetail({
             </Link>
           }
         </div>
-        {rollsDisplay.length > 0 &&
-          <>
-            <a href={getYoutubeLink(0, rollsDisplay[0]?.notes, rollsDisplay[0]?.vod_links)}>
-              <GrYoutube style={{ color: '#FF0000' }} size={32} />
-            </a>
-            <a href="#" className="ml-4">
-              <FaTwitch style={{ color: '#6441A4' }} size={29} />
-            </a>
-          </>
-        }
+        <a
+          href={getYoutubeLink(0, '', vod_links)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <GrYoutube style={{ color: '#FF0000' }} size={32} />
+        </a>
+        <a href="#" className="ml-4">
+          <FaTwitch style={{ color: '#6441A4' }} size={29} />
+        </a>
+
 
         <h4>{air_date}</h4>
         <p className="is-medium">{description}</p>
