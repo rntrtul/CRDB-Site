@@ -10,7 +10,7 @@ import {
   Tab, Tabs, TabList, TabPanel,
 } from 'react-tabs';
 import { RollTable, SpellTable } from '../../components/Table/tableTypes';
-import { getYoutubeLink, timeFormat } from '../../components/helpers';
+import { getYoutubeLink, timeFormat } from '../../components/utils';
 
 function EpisodeDetail({
   episode: {
@@ -276,7 +276,7 @@ export async function getStaticPaths() {
     params: { id: episode.id.toString() },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params }) {

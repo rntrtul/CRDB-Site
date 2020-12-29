@@ -100,7 +100,7 @@ export async function getStaticPaths() {
   const paths = data.map((weapon) => ({
     params: { id: weapon.id.toString() },
   }));
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params }) {

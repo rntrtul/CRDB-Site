@@ -91,6 +91,7 @@ export async function getStaticPaths() {
   const { data } = await axios.get(`${process.env.DB_HOST}/spells/api/spell`);
   const paths = data.map((spell) => ({
     params: { id: spell.id.toString() },
+    fallback: true,
   }));
 
   return { paths, fallback: false };
@@ -100,7 +101,9 @@ export async function getStaticProps({ params }) {
   const spell = (
     await axios.get(`${process.env.DB_HOST}/spells/api/spell/${params.id}`)).data;
 
-  return { props: { spell } };
+  return {
+    props: { spell },
+  };
 }
 
 export default SpellDetail;

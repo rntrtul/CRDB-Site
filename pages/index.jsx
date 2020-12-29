@@ -1,8 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 
-// todo: Implement home page and an about page
-
 export default function Home({ rollCount, episodeCount }) {
   return (
     <>
@@ -36,6 +34,5 @@ export default function Home({ rollCount, episodeCount }) {
 }
 
 export async function getStaticProps() {
-  console.log('asdad');
-  return { props: { rollCount: 25000, episodeCount: 220 }};
+  return { props: { rollCount: 25000, episodeCount: 220 } };
 }

@@ -44,6 +44,7 @@ export const getStaticProps = async () => {
 
   return {
     props: { rolls },
+    revalidate: 10800,
   };
 };
 

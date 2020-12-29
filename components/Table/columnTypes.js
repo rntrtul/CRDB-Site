@@ -1,17 +1,6 @@
 import Link from "next/link";
-import { getYoutubeLink, timeFormat } from "../helpers";
+import { getYoutubeLink, timeFormat, downObj, timestampFilter, episodeFilter, rollTypeFilter, characterFilter } from "../utils";
 import { NumberRangeColumnFilter, SelectColumnFilter } from "./table";
-
-const downObj = (path, obj) => {
-  const stepPath = path.split('.');
-  let curr = obj;
-  for (const index in stepPath){
-    curr = curr[stepPath[index]];
-  }
-  return curr;
-}
-
-// todo: make text based filters better (and for all support empty value as a match)
 
 const castLevelCol = ({ castLevel = "cast_level" }) => ({
   Header: "Cast Level",
@@ -35,7 +24,7 @@ const characterCol = ({ id = "character.id", name = "character.name", header = "
     </Link>
   ),
   Filter: SelectColumnFilter,
-  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Character'].key === filterValue),
+  filter: (rows, columnIds, filterValue) => characterFilter(rows, columnIds, filterValue),
   disableSortBy: true,
 });
 
@@ -62,7 +51,7 @@ const episodeCol = ({
       </a>
     </Link>
   ),
-  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Episode'].key.includes(filterValue)),
+  filter: (rows, columnIds, filterValue) => episodeFilter(rows, columnIds, filterValue),
 });
 
 const killsCol = ({ killCount = "kill_count" }) => ({
@@ -97,7 +86,7 @@ const rollTypeCol = ({id = "roll_type.id", name = "roll_type.name"}) => ({
     </Link>
   ),
   Filter: SelectColumnFilter,
-  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Roll Type'].key === filterValue),
+  filter: (rows, columnIds, filterValue) => rollTypeFilter(rows, columnIds, filterValue),
 });
 
 const spellCol = ({ id = "spell.id", name = "spell.name" }) => ({
@@ -132,7 +121,7 @@ const timestampCol = ({
       </a>
   ),
   disableSortBy: true,
-  filter: (rows, columnIds, filterValue) => rows.filter((row) => row.values['Time Stamp'].key.includes(filterValue)),
+  filter: (rows, columnIds, filterValue) => timestampFilter(rows, columnIds, filterValue),
 });
 
 const totalCol = ({ finalVal = "final_value" }) => ({

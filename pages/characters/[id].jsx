@@ -338,7 +338,7 @@ export async function getStaticPaths() {
   const paths = data.map((character) => ({
     params: { id: character.id.toString() },
   }));
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params }) {

@@ -56,6 +56,7 @@ export const getStaticProps = async () => {
   const data = await fetchData();
   return {
     props: data,
+    revalidate: 10800,
   };
 };
 

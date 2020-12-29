@@ -8,7 +8,7 @@ import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import regeneratorRuntime from 'regenerator-runtime';
 import TableFilter from './tableFilter';
-import { getKey } from '../helpers';
+import { getKey } from '../utils';
 import Pagination from '../pagination';
 
 // todo: debounce filters so typing won't be slow
@@ -31,49 +31,16 @@ function getMinMax(arr, id) {
   return [currMin, currMax];
 }
 
-function GlobalFilter({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = React.useState(globalFilter);
-  const onChange = useAsyncDebounce((value) => { setGlobalFilter(value || undefined); }, 200);
-
-  return (
-    <>
-      <div className="field is-horizontal">
-        <div className="field-label is-normal">
-          <label className="label">Search</label>
-        </div>
-        <div className="field-body">
-          <div className="field">
-            <p className="control">
-              <input
-                className="input"
-                type="text"
-                placeholder="Search all columns"
-                value={value || ''}
-                onChange={(e) => { setValue(e.target.value); onChange(e.target.value); }}
-              />
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 export function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
-  const [query, setQuery] = useState(filterValue);
   const count = preFilteredRows.length;
-
-  const search = debounce(() => setFilter(query !== '' ? query : undefined), 100);
 
   return (
     <input
       className="input"
       placeholder={`Search ${count} records...`}
-      value={query || ''}
+      value={filterValue || ''}
       onChange={(e) => {
-        setQuery(e.target.value);
-        search();
+        setFilter(e.target.value);
       }}
     />
   );
@@ -90,7 +57,7 @@ export function SelectColumnFilter({
   const options = React.useMemo(() => {
     const availOptions = new Set();
 
-    preFilteredRows.forEach(row => {
+    preFilteredRows.forEach((row) => {
       availOptions.add(row.values[id].key);
     });
     return [...availOptions.values()].sort((a, b) => a.localeCompare(b));
@@ -184,13 +151,12 @@ function Table({
     page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
     pageCount,
     gotoPage,
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize, sortedData },
+    state: { pageIndex, pageSize },
     prepareRow,
   } = useTable(
     {

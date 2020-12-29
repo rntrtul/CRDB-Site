@@ -2,7 +2,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { timeFormat, getYoutubeLink } from '../../../components/helpers';
+import { timeFormat, getYoutubeLink } from '../../../components/utils';
 import { PotionTable } from '../../../components/Table/tableTypes';
 
 function PotionDetail({
@@ -49,7 +49,7 @@ export async function getStaticPaths() {
   const paths = data.map((potion) => ({
     params: { id: potion.id.toString() },
   }));
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps({ params }) {

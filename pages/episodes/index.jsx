@@ -85,6 +85,7 @@ export const getStaticProps = async () => {
   const campaignTwo = episodeList.filter((el) => el.campaign.num === 2);
   return {
     props: { campaignOne, campaignTwo },
+    revalidate: 10800,
   };
 };
 

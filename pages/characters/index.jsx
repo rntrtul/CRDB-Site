@@ -82,6 +82,7 @@ export const getStaticProps = async () => {
   const npc = (await fetchData(`${process.env.DB_HOST}/characters/api/charactertype/2`)).characters;
   return {
     props: { pc, npc },
+    revalidate: 10800,
   };
 };
 
