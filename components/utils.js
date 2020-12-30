@@ -10,7 +10,13 @@ export function getYoutubeLink(time, notes, vodLinks) {
 }
 
 export function timeFormat(secs) {
-  return new Date(secs * 1000).toISOString().substr(12, 7);
+  const hours = Math.floor(secs / 3600);
+  let minutes = Math.floor((secs - (hours * 3600)) / 60);
+  let seconds = secs - (hours * 3600) - (minutes * 60);
+
+  if (minutes < 10) minutes = `0${minutes}`;
+  if (seconds < 10) seconds = `0${seconds}`;
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 const getCellById = (row, id) => row.cells.find((cell) => cell.column.id === id);
