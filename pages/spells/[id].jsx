@@ -2,22 +2,38 @@ import axios from 'axios';
 import Head from 'next/head';
 import PropType from 'prop-types';
 import React from 'react';
+import DefaultErrorPage from 'next/error';
+import { useRouter } from 'next/router';
 import ReactFrappeChart from 'react-frappe-charts';
 import { SpellTable } from '../../components/Table/tableTypes';
 
-function SpellDetail({
-  spell: {
+function SpellDetail({ spell }) {
+  const router = useRouter();
+  if (router.isFallback) return (<div>Loading ...</div>);
+  
+  if (!spell) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+  const {
     cantrip,
     casts,
     level,
     name,
     top_users,
-  },
-}) {
+  } = spell;
+  
   let aboveCast = 0;
   casts.map(
     (casting) => casting.cast_level > level && aboveCast++,
   );
+  
   return (
     <div className="content">
       <Head>
@@ -31,11 +47,11 @@ function SpellDetail({
       <p className="subtitle">
         {cantrip === true && <span>Cantrip</span>}
         {cantrip === false && (
-        <span>
-          Level:
-          {' '}
-          {level}
-        </span>
+          <span>
+            Level:
+            {' '}
+            {level}
+          </span>
         )}
       </p>
       <p>
@@ -84,7 +100,7 @@ SpellDetail.propTypes = {
     level: PropType.number,
     name: PropType.string,
     top_users: PropType.array,
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -97,12 +113,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const spell = (
-    await axios.get(`${process.env.DB_HOST}/spells/api/spell/${params.id}`)).data;
-
-  return {
-    props: { spell },
-  };
+  try {
+    const spell = (await axios.get(`${process.env.DB_HOST}/spells/api/spell/${params.id}`)).data;
+    return { props: { spell } };
+  } catch (err) {
+    return { props: { spell: null } };
+  }
 }
 
 export default SpellDetail;

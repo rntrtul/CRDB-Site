@@ -6,13 +6,27 @@ import {
 } from 'react-tabs';
 import React from 'react';
 import PropTypes from 'prop-types';
+import DefaultErrorPage from 'next/error';
+import { useRouter } from 'next/router';
 import { RollTable, SpellTable } from '../../components/Table/tableTypes';
 import CharacterStats from '../../components/Stats/characterStats';
 
-// todo: make a central file with all object (roll, episode) for smaller proptypes
+function CharacterDetail({ character }) {
+  const router = useRouter();
+  if (router.isFallback) return <div>Loading ...</div>;
 
-function CharacterDetail({
-  character: {
+  if (!character) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+
+  const {
     appearances,
     campaign,
     char_type,
@@ -30,9 +44,9 @@ function CharacterDetail({
     rolls,
     roll_counts,
     top_roll_types,
-    top_spells,
-  },
-}) {
+    top_spells
+  } = character;
+
   return (
     <div className="content">
       <Head>
@@ -79,19 +93,19 @@ function CharacterDetail({
         </TabList>
 
         <TabPanel>
-            <CharacterStats
-              appearances={appearances}
-              campaign={campaign}
-              damageTotal={damage_total}
-              epTotals={ep_totals}
-              hdywtCount={hdywt_count}
-              killCount={kill_count}
-              natOnes={nat_ones}
-              natTwenty={nat_twenty}
-              rollCounts={roll_counts}
-              topRollTypes={top_roll_types}
-              topSpells={top_spells}
-            />
+          <CharacterStats
+            appearances={appearances}
+            campaign={campaign}
+            damageTotal={damage_total}
+            epTotals={ep_totals}
+            hdywtCount={hdywt_count}
+            killCount={kill_count}
+            natOnes={nat_ones}
+            natTwenty={nat_twenty}
+            rollCounts={roll_counts}
+            topRollTypes={top_roll_types}
+            topSpells={top_spells}
+          />
         </TabPanel>
         <TabPanel>
           <RollTable data={rolls} defaultPageSize={50} showFilter hideCharacter />
@@ -163,7 +177,7 @@ CharacterDetail.propTypes = {
       total_count: PropTypes.number,
       list: PropTypes.arrayOf(PropTypes.array),
     }),
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -175,8 +189,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
-  return { props: { character } };
+  try {
+    const character = (await axios.get(`${process.env.DB_HOST}/characters/api/character/${params.id}`)).data;
+    return { props: { character } };
+  } catch (err) {
+    return { props: { character: null } };
+  }
 }
 
 export default CharacterDetail;

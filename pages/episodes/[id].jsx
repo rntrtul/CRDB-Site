@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Head from 'next/head';
 import Link from 'next/link';
+import DefaultErrorPage from 'next/error';
 import ReactFrappeChart from 'react-frappe-charts';
 import PropTypes from 'prop-types';
 import { GrYoutube, GrLinkNext, GrLinkPrevious } from 'react-icons/gr';
@@ -9,11 +10,26 @@ import { FaTwitch } from 'react-icons/fa';
 import {
   Tab, Tabs, TabList, TabPanel,
 } from 'react-tabs';
+import { useRouter } from 'next/router';
 import { RollTable, SpellTable } from '../../components/Table/tableTypes';
 import { getYoutubeLink, timeFormat } from '../../components/utils';
 
-function EpisodeDetail({
-  episode: {
+function EpisodeDetail({ episode }) {
+  const router = useRouter();
+  if (router.isFallback) return (<div>Loading ...</div>);
+
+  if (!episode) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+
+  const {
     air_date,
     attendance,
     appearances,
@@ -33,8 +49,8 @@ function EpisodeDetail({
     rolls,
     title,
     vod_links,
-  },
-}) {
+  } = episode;
+
   const rollsDisplay = rolls.map((roll) => ({
     timestamp: roll.timestamp,
     character: roll.character,
@@ -61,13 +77,14 @@ function EpisodeDetail({
       <Head><title>{title}</title></Head>
       <div className="content is-medium">
         <div className="is-flex is-justify-content-space-between is-align-items-center">
-          {prev_episode &&
+          {prev_episode
+            && (
             <Link href="/episodes/[id]" as={`/episodes/${prev_episode}`}>
               <a>
                 <GrLinkPrevious size={32} />
               </a>
             </Link>
-          }
+            )}
           <h1>
             {title}
             {' '}
@@ -77,13 +94,14 @@ function EpisodeDetail({
             {num}
             )
           </h1>
-          {next_episode &&
+          {next_episode
+            && (
             <Link href="/episodes/[id]" as={`/episodes/${next_episode}`}>
               <a>
                 <GrLinkNext size={32} />
               </a>
             </Link>
-          }
+            )}
         </div>
         <a
           href={getYoutubeLink(0, '', vod_links)}
@@ -95,7 +113,6 @@ function EpisodeDetail({
         <a href="#" className="ml-4">
           <FaTwitch style={{ color: '#6441A4' }} size={29} />
         </a>
-
 
         <h4>{air_date}</h4>
         <p className="is-medium">{description}</p>
@@ -126,7 +143,7 @@ function EpisodeDetail({
               type="percentage"
               title="Time Breakdown"
               colors={['dark-grey', 'blue', 'dark-grey', 'blue', 'dark-grey']}
-              barOptions={{depth: 0}}
+              barOptions={{ depth: 0 }}
               tooltipOptions={{
                 formatTooltipX: (d) => d,
                 formatTooltipY: (d) => d,
@@ -222,7 +239,7 @@ function EpisodeDetail({
             </h3>
             <SpellTable
               data={castsDisplay}
-              timestampAccessor={{vodLinks: 'vod_links'}}
+              timestampAccessor={{ vodLinks: 'vod_links' }}
               title=""
               hideEpisode
             />
@@ -235,7 +252,7 @@ function EpisodeDetail({
             </h3>
             <RollTable
               data={rollsDisplay}
-              timestampAccessor={{vodLinks: 'vod_links'}}
+              timestampAccessor={{ vodLinks: 'vod_links' }}
               title=""
               hideEpisode
             />
@@ -267,7 +284,7 @@ EpisodeDetail.propTypes = {
     rolls: PropTypes.array,
     title: PropTypes.string,
     vod_links: PropTypes.array,
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -280,8 +297,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const episode = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode/${params.id}`)).data;
-  return { props: { episode } };
+  try {
+    const episode = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode/${params.id}`)).data;
+    return { props: { episode } };
+  } catch (err) {
+    return { props: { episode: null } }
+  }
 }
 
 export default EpisodeDetail;

@@ -1,9 +1,8 @@
 import axios from 'axios';
 import React from 'react';
 import Head from 'next/head';
-import BarChart from "../components/Charts/bar";
+import BarChart from '../components/Charts/bar';
 import { timeFormat } from '../components/utils';
-import ReactFrappeChart from "react-frappe-charts";
 
 export default function Home({
   episodeCount,
@@ -25,9 +24,18 @@ export default function Home({
       </Head>
       <div className="container">
         <div className="content">
-          <h1>Rolls: {rollCount}</h1>
-          <h1>Episodes: {episodeCount}</h1>
-          <h1>Length: {timeFormat(gameTime)}</h1>
+          <h1>
+            Rolls:
+            {rollCount}
+          </h1>
+          <h1>
+            Episodes:
+            {episodeCount}
+          </h1>
+          <h1>
+            Length:
+            {timeFormat(gameTime)}
+          </h1>
 
           <div className="no_x_axis">
             <div className="tile is-ancestor">
@@ -90,7 +98,15 @@ export default function Home({
               <ol>
                 {kills.map((char) => (
                   <>
-                    {char[1] !== 0 && char[1] !== null && <li>{char[0]} | {char[1]}</li>}
+                    {char[1] !== 0 && char[1] !== null && (
+                    <li>
+                      {char[0]}
+                      {' '}
+                      |
+                      {' '}
+                      {char[1]}
+                    </li>
+                    )}
                   </>
                 ))}
               </ol>
@@ -100,17 +116,33 @@ export default function Home({
               <ol>
                 {natOne.map((char) => (
                   <>
-                    {char[1] !== 0 && char[1] !== null && <li>{char[0]} | {char[1]}</li>}
+                    {char[1] !== 0 && char[1] !== null && (
+                    <li>
+                      {char[0]}
+                      {' '}
+                      |
+                      {' '}
+                      {char[1]}
+                    </li>
+                    )}
                   </>
                 ))}
               </ol>
             </div>
             <div className="column">
-              <h2>Nat Twenty</h2>
+              <h2>Nat Twenties</h2>
               <ol>
                 {natTwenty.map((char) => (
                   <>
-                    {char[1] !== 0 && char[1] !== null && <li>{char[0]} | {char[1]}</li>}
+                    {char[1] !== 0 && char[1] !== null && (
+                    <li>
+                      {char[0]}
+                      {' '}
+                      |
+                      {' '}
+                      {char[1]}
+                    </li>
+                    )}
                   </>
                 ))}
               </ol>

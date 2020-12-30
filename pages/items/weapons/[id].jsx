@@ -1,16 +1,30 @@
 import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import DefaultErrorPage from 'next/error';
 import { RollTable } from '../../../components/Table/tableTypes';
 
-function WeaponDetail({
-  weapon: {
-    damages,
-    dmg_total,
-    name,
-    uses,
-  },
-}) {
+function WeaponDetail({ weapon }) {
+  const router = useRouter();
+  if (router.isFallback) return (<div>Loading ...</div>);
+
+  if (!weapon) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+  
+  const {
+    damages, dmg_total, name, uses,
+  } = weapon;
+
   return (
     <div className="content">
       <h1>{name}</h1>
@@ -92,7 +106,7 @@ WeaponDetail.propTypes = {
     uses: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
     })),
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -104,8 +118,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const weapon = (await axios.get(`${process.env.DB_HOST}/items/api/weapon/${params.id}`)).data;
-  return { props: { weapon } };
+  try {
+    const weapon = (await axios.get(`${process.env.DB_HOST}/items/api/weapon/${params.id}`)).data;
+    return { props: { weapon } };
+  } catch (err) {
+    return { props: { weapon: null } };
+  }
 }
 
 export default WeaponDetail;

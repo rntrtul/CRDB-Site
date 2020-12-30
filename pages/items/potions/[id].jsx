@@ -1,17 +1,28 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { timeFormat, getYoutubeLink } from '../../../components/utils';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import DefaultErrorPage from 'next/error';
 import { PotionTable } from '../../../components/Table/tableTypes';
 
-function PotionDetail({
-  potion: {
-    description,
-    name,
-    uses,
-  },
-}) {
+function PotionDetail({ potion }) {
+  const router = useRouter();
+  if (router.isFallback) return (<div>Loading ...</div>);
+
+  if (!potion) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+
+  const { description, name, uses } = potion;
+  
   return (
     <div className="content">
       <h1>{name}</h1>
@@ -41,7 +52,7 @@ PotionDetail.propTypes = {
         name: PropTypes.string,
       }),
     })),
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -53,8 +64,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const potion = (await axios.get(`${process.env.DB_HOST}/items/api/potion/${params.id}`)).data;
-  return { props: { potion } };
+  try {
+    const potion = (await axios.get(`${process.env.DB_HOST}/items/api/potion/${params.id}`)).data;
+    return { props: { potion } };
+  } catch (err) {
+    return { props: { potion: null } };
+  }
 }
 
 export default PotionDetail;

@@ -1,14 +1,33 @@
 import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import DefaultErrorPage from 'next/error';
 import { RollTable } from '../../../components/Table/tableTypes';
 
 function RollType({ rollType }) {
+  const router = useRouter();
+  if (router.isFallback) return (<div>Loading ...</div>);
+
+  if (!rollType) {
+    return (
+      <>
+        <Head>
+          <meta name="robots" content="noindex" />
+        </Head>
+        <DefaultErrorPage statusCode={404} />
+      </>
+    );
+  }
+
+  const { rolls, name } = rollType;
+  
   return (
     <div className="content">
-      <h1>{rollType.name}</h1>
+      <h1>{name}</h1>
       <RollTable
-        data={rollType.rolls}
+        data={rolls}
         defaultPageSize={50}
         hideRollType
         showFilter
@@ -22,7 +41,7 @@ RollType.propTypes = {
     name: PropTypes.string,
     count: PropTypes.number,
     rolls: PropTypes.array,
-  }).isRequired,
+  }),
 };
 
 export async function getStaticPaths() {
@@ -35,8 +54,12 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const rollType = (await axios.get(`${process.env.DB_HOST}/rolls/api/rolltype/${params.id}`)).data;
-  return { props: { rollType } };
+  try {
+    const rollType = (await axios.get(`${process.env.DB_HOST}/rolls/api/rolltype/${params.id}`)).data;
+    return { props: { rollType } };
+  } catch(err){
+    return { props: { rollType: null } };
+  }
 }
 
 export default RollType;

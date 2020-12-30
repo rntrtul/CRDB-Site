@@ -4,8 +4,6 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-// eventually change charactype from 1 to pc (use name not int id)
-// change to using api (witch will call fetcher
 const fetchData = async () => axios
   .get(`${process.env.DB_HOST}/spells/api/spell`)
   .then((res) => ({
