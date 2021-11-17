@@ -4,10 +4,13 @@ import Head from 'next/head';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Tab, Tabs, TabList, TabPanel,
+  Tab, Tabs, TabList, TabPanel
 } from 'react-tabs';
 
-const Items = ({ potions, weapons }) => (
+const Items = ({
+  potions,
+  weapons
+}) => (
   <>
     <Head>
       <title>CRDB | Items</title>
@@ -18,7 +21,7 @@ const Items = ({ potions, weapons }) => (
           <div className="tabs is-centered">
             <ul>
               <Tab>
-                  <a>Weapons</a>
+                <a>Weapons</a>
               </Tab>
               <Tab>
                 <a>Potions</a>
@@ -59,31 +62,37 @@ Items.propTypes = {
   potions: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    description: PropTypes.string,
+    description: PropTypes.string
   })).isRequired,
   weapons: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    attack_bonus: PropTypes.number,
-  })).isRequired,
+    attack_bonus: PropTypes.number
+  })).isRequired
 };
 
-const fetchData = async (url) => axios.get(url).then(
-  (res) => ({
-    error: false,
-    data: res.data,
-  }),
-).catch(() => ({
-  error: true,
-  data: null,
-}));
+const fetchData = async (url) => axios.get(url)
+  .then(
+    (res) => ({
+      error: false,
+      data: res.data
+    })
+  )
+  .catch(() => ({
+      error: true,
+      data: null
+    })
+  );
 
 export const getStaticProps = async () => {
   const potions = (await fetchData(`${process.env.DB_HOST}/items/api/potion`)).data;
   const weapons = (await fetchData(`${process.env.DB_HOST}/items/api/weapon`)).data;
   return {
-    props: { potions, weapons },
-    revalidate: 10800,
+    props: {
+      potions,
+      weapons
+    },
+    revalidate: 10800
   };
 };
 

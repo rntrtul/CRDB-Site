@@ -288,7 +288,7 @@ EpisodeDetail.propTypes = {
 };
 
 export async function getStaticPaths() {
-  const { data } = await axios.get(`${process.env.DB_HOST}/episodes/api/episode`);
+  const { data } = await axios.get(`${process.env.DB_HOST}/episodes/`);
   const paths = data.map((episode) => ({
     params: { id: episode.id.toString() },
   }));
@@ -298,7 +298,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const episode = (await axios.get(`${process.env.DB_HOST}/episodes/api/episode/${params.id}`)).data;
+    const episode = (await axios.get(`${process.env.DB_HOST}/episodes/${params.id}`)).data;
     return { props: { episode } };
   } catch (err) {
     return { props: { episode: null } }

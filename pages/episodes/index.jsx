@@ -3,19 +3,22 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import {
-  Tab, Tabs, TabList, TabPanel,
+  Tab, Tabs, TabList, TabPanel
 } from 'react-tabs';
 import PropTypes from 'prop-types';
 
-const fetchData = async () => axios.get(`${process.env.DB_HOST}/episodes/api/episode`).then(
-  (res) => ({
-    error: false,
-    episodes: res.data,
-  }),
-).catch(() => ({
-  error: true,
-  episodes: null,
-}));
+const fetchData = async () => axios.get(`${process.env.DB_HOST}/episodes/`)
+  .then(
+    (res) =>
+      ({
+        error: false,
+        episodes: res.data
+      })
+  )
+  .catch(() => ({
+    error: true,
+    episodes: null
+  }));
 
 const epEntry = (ep) => (
   <li key={ep.id}>
@@ -30,7 +33,7 @@ const epEntry = (ep) => (
   </li>
 );
 
-const Episodes = ({ campaignOne, campaignTwo }) => (
+const Episodes = ({ campaigns }) => (
   <>
     <Head>
       <title>CRDB | Episodes</title>
@@ -38,54 +41,51 @@ const Episodes = ({ campaignOne, campaignTwo }) => (
     <Tabs selectedTabClassName="is-active">
       <TabList className="tabs is-centered">
         <ul>
-          <Tab>
-            <a>{campaignOne[0].campaign.name}</a>
-          </Tab>
-          <Tab>
-            <a>{campaignTwo[0].campaign.name}</a>
-          </Tab>
+          {campaigns.map((campaign) =>
+            <Tab>
+              <a>{campaign[0].campaign.name}</a>
+            </Tab>
+          )}
         </ul>
       </TabList>
-      <TabPanel>
-        <ul>
-          {campaignOne.map((ep) => epEntry(ep))}
-        </ul>
-      </TabPanel>
-      <TabPanel>
-        <ul>
-          {campaignTwo.map((ep) => epEntry(ep))}
-        </ul>
-      </TabPanel>
+      {campaigns.map((campaign) =>
+        <TabPanel>
+          <ul>
+            {campaign.map((ep) => epEntry(ep))}
+          </ul>
+        </TabPanel>
+      )}
     </Tabs>
   </>
 );
 
 Episodes.propTypes = {
-  campaignOne: PropTypes.arrayOf(PropTypes.shape({
+  campaigns: PropTypes.arrayOf(PropTypes.shape({
     campaign: PropTypes.shape({
       name: PropTypes.string,
-      num: PropTypes.number,
+      num: PropTypes.number
     }),
     length: PropTypes.number,
-    title: PropTypes.string,
-  })).isRequired,
-  campaignTwo: PropTypes.arrayOf(PropTypes.shape({
-    campaign: PropTypes.shape({
-      name: PropTypes.string,
-      num: PropTypes.number,
-    }),
-    length: PropTypes.number,
-    title: PropTypes.string,
-  })).isRequired,
+    title: PropTypes.string
+  })).isRequired
 };
 
 export const getStaticProps = async () => {
-  const episodeList = (await fetchData()).episodes;
-  const campaignOne = episodeList.filter((el) => el.campaign.num === 1);
-  const campaignTwo = episodeList.filter((el) => el.campaign.num === 2);
+  const {
+    error,
+    episodes
+  } = (await fetchData());
+
+  const campaigns = [];
+
+  if (!error) {
+    // todo: filter all campaigns properly
+    campaigns.push(episodes.filter((el) => el.campaign.num === 1));
+    campaigns.push(episodes.filter((el) => el.campaign.num === 2));
+  }
   return {
-    props: { campaignOne, campaignTwo },
-    revalidate: 10800,
+    props: { campaigns },
+    revalidate: 10800
   };
 };
 
